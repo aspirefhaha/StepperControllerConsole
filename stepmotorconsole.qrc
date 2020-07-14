@@ -1,0 +1,8 @@
+<RCC>
+    <qresource prefix="/">
+        <file>StepMotorConsole.qm</file>
+        <file>warning.png</file>
+        <file>images/motorcon.png</file>
+    </qresource>
+    <qresource prefix="/image"/>
+</RCC>

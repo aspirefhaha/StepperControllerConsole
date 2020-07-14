@@ -1,0 +1,85 @@
+<?xml version="1.0"?>
+<mavlink>
+  <version>3</version>
+  <enums>
+    <enum name="SMCMD">
+      <description>StepMotor Command ENUMS</description>
+      <entry value="0" name="SMCMD_GETCONFIG">
+        <description>Get Motor Stepper Controller configs</description>
+      </entry>
+      <entry value="1" name="SMCMD_SOFTSTOP">
+        <description>Reserved for future use.</description>
+      </entry>
+      <entry value="2" name="SMCMD_MOVEFWD" />
+      <entry value="3" name="SMCMD_MOVEBWD" />
+      <entry value="4" name="SMCMD_SETHOME" />
+      <entry value="5" name="SMCMD_SETMARK" />
+      <entry value="6" name="SMCMD_HARDSTOP" />
+      <entry value="7" name="SMCMD_MOVESTEP" />
+      <entry value="8" name="SMCMD_SETMAXSPEED" />
+      <entry value="9" name="SMCMD_GOMARK" />
+      <entry value="10" name="SMCMD_RUNPROG1" />
+      <entry value="11" name="SMCMD_SETACC" />
+      <entry value="12" name="SMCMD_SETDEC" />
+      <entry value="13" name="SMCMD_GOPOS" />
+      <entry value="14" name="SMCMD_SETOC" />
+      <entry value="15" name="SMCMD_GETSTATUS" />
+      <entry value="16" name="SMCMD_SETTVAL" ></entry>
+      <entry value="17" name="SMCMD_SETMINSPEED" />
+      <entry value="18" name="SMCMD_ENABLE"/>
+      <entry value="19" name="SMCMD_DISABLE" />
+      <entry value="20" name="SMCMD_SETSTEPMODE" />
+    </enum>
+    
+    
+    <enum name="EMOTORSTATE">
+      <description>外部PWM情况</description>
+      <entry value="0" name="EMS_ACCELERATING"></entry>
+      <entry value="1" name="EMS_DECELERATING"></entry>
+      <entry value="2" name="EMS_STEADY"></entry>
+      <entry value="3" name="EMS_INACTIVE"></entry>
+    </enum>
+  </enums>
+  <messages>
+    <message id="0" name="HEARTBEAT">
+      <description>The heartbeat message shows that a system or component is present and responding. The type and autopilot fields (along with the message component id), allow the receiving system to treat further messages from this system appropriately (e.g. by laying out the user interface based on the autopilot). This microservice is documented at https://mavlink.io/en/services/heartbeat.html</description>
+      <field type="uint32_t" name="tick">TICK 是开机以来经过的Tick时间，精度和操作系统有关</field>
+      <field type="int32_t" name="position"></field>
+      <field type="float" name="dynamic">电位器值</field>
+      <field type="int32_t" name="speed" ></field>
+      <field type="uint8_t" name="stepmode" />
+      <field type="uint8_t" name="runstatus" enum="EMOTORSTATE">外部PWM方式下的加减速状态</field>
+    </message>
+    <message id="1" name="CONFIG">
+      <field type="uint32_t" name="acc"/>
+      <field type="uint32_t" name="dec" />
+      <field type="uint32_t" name="maxspeed" />
+      <field type="uint32_t" name="minspeed" />
+      <field type="uint8_t" name="stepmode" />
+      <field type="uint8_t" name="ocdth" />
+      <field type="uint8_t" name="tval" />
+      <field type="uint16_t" name="config" />
+      <field type="uint32_t" name="mark">Mark Position</field>
+      <field type="uint8_t" name="isRboot">是否刚重启</field>
+    </message>
+    <message id="2" name="RUNCMD">
+      <field type="uint32_t" name="cmd" enum="SMCMD"/>
+      <field type="uint32_t" name="dir" > 0-fwd 1-bwd </field> 
+      <field type="int32_t" name="distance"> distance </field>
+    </message>
+    <message id="3" name="L6474STATUS" >
+      <field type="uint16_t" name="status"></field>  
+    </message>
+    
+    <message id="300" name="PROTOCOL_VERSION">
+      <wip/>
+      <!-- This message is work-in-progress and it can therefore change. It should NOT be used in stable production environments. -->
+      <description>Version and capability of protocol version. This message is the response to REQUEST_PROTOCOL_VERSION and is used as part of the handshaking to establish which MAVLink version should be used on the network. Every node should respond to REQUEST_PROTOCOL_VERSION to enable the handshaking. Library implementers should consider adding this into the default decoding state machine to allow the protocol core to respond directly.</description>
+      <field type="uint16_t" name="version">Currently active MAVLink version number * 100: v1.0 is 100, v2.0 is 200, etc.</field>
+      <field type="uint16_t" name="min_version">Minimum MAVLink version supported</field>
+      <field type="uint16_t" name="max_version">Maximum MAVLink version supported (set to the same value as version by default)</field>
+      <field type="uint8_t[8]" name="spec_version_hash">The first 8 bytes (not characters printed in hex!) of the git hash.</field>
+      <field type="uint8_t[8]" name="library_version_hash">The first 8 bytes (not characters printed in hex!) of the git hash.</field>
+    </message>
+  </messages>
+</mavlink>
