@@ -9,7 +9,7 @@ typedef struct __mavlink_heartbeat_t {
  int32_t position; /*<  */
  float dynamic; /*<  电位器值*/
  int32_t speed; /*<  */
- uint8_t stepmode; /*<  */
+ uint8_t lockstate; /*<  上下限位状态*/
  uint8_t runstatus; /*<  外部PWM方式下的加减速状态*/
 } mavlink_heartbeat_t;
 
@@ -18,8 +18,8 @@ typedef struct __mavlink_heartbeat_t {
 #define MAVLINK_MSG_ID_0_LEN 18
 #define MAVLINK_MSG_ID_0_MIN_LEN 18
 
-#define MAVLINK_MSG_ID_HEARTBEAT_CRC 105
-#define MAVLINK_MSG_ID_0_CRC 105
+#define MAVLINK_MSG_ID_HEARTBEAT_CRC 62
+#define MAVLINK_MSG_ID_0_CRC 62
 
 
 
@@ -32,7 +32,7 @@ typedef struct __mavlink_heartbeat_t {
          { "position", NULL, MAVLINK_TYPE_INT32_T, 0, 4, offsetof(mavlink_heartbeat_t, position) }, \
          { "dynamic", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_heartbeat_t, dynamic) }, \
          { "speed", NULL, MAVLINK_TYPE_INT32_T, 0, 12, offsetof(mavlink_heartbeat_t, speed) }, \
-         { "stepmode", NULL, MAVLINK_TYPE_UINT8_T, 0, 16, offsetof(mavlink_heartbeat_t, stepmode) }, \
+         { "lockstate", NULL, MAVLINK_TYPE_UINT8_T, 0, 16, offsetof(mavlink_heartbeat_t, lockstate) }, \
          { "runstatus", NULL, MAVLINK_TYPE_UINT8_T, 0, 17, offsetof(mavlink_heartbeat_t, runstatus) }, \
          } \
 }
@@ -44,7 +44,7 @@ typedef struct __mavlink_heartbeat_t {
          { "position", NULL, MAVLINK_TYPE_INT32_T, 0, 4, offsetof(mavlink_heartbeat_t, position) }, \
          { "dynamic", NULL, MAVLINK_TYPE_FLOAT, 0, 8, offsetof(mavlink_heartbeat_t, dynamic) }, \
          { "speed", NULL, MAVLINK_TYPE_INT32_T, 0, 12, offsetof(mavlink_heartbeat_t, speed) }, \
-         { "stepmode", NULL, MAVLINK_TYPE_UINT8_T, 0, 16, offsetof(mavlink_heartbeat_t, stepmode) }, \
+         { "lockstate", NULL, MAVLINK_TYPE_UINT8_T, 0, 16, offsetof(mavlink_heartbeat_t, lockstate) }, \
          { "runstatus", NULL, MAVLINK_TYPE_UINT8_T, 0, 17, offsetof(mavlink_heartbeat_t, runstatus) }, \
          } \
 }
@@ -60,12 +60,12 @@ typedef struct __mavlink_heartbeat_t {
  * @param position  
  * @param dynamic  电位器值
  * @param speed  
- * @param stepmode  
+ * @param lockstate  上下限位状态
  * @param runstatus  外部PWM方式下的加减速状态
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_heartbeat_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               uint32_t tick, int32_t position, float dynamic, int32_t speed, uint8_t stepmode, uint8_t runstatus)
+                               uint32_t tick, int32_t position, float dynamic, int32_t speed, uint8_t lockstate, uint8_t runstatus)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_HEARTBEAT_LEN];
@@ -73,7 +73,7 @@ static inline uint16_t mavlink_msg_heartbeat_pack(uint8_t system_id, uint8_t com
     _mav_put_int32_t(buf, 4, position);
     _mav_put_float(buf, 8, dynamic);
     _mav_put_int32_t(buf, 12, speed);
-    _mav_put_uint8_t(buf, 16, stepmode);
+    _mav_put_uint8_t(buf, 16, lockstate);
     _mav_put_uint8_t(buf, 17, runstatus);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_HEARTBEAT_LEN);
@@ -83,7 +83,7 @@ static inline uint16_t mavlink_msg_heartbeat_pack(uint8_t system_id, uint8_t com
     packet.position = position;
     packet.dynamic = dynamic;
     packet.speed = speed;
-    packet.stepmode = stepmode;
+    packet.lockstate = lockstate;
     packet.runstatus = runstatus;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_HEARTBEAT_LEN);
@@ -103,13 +103,13 @@ static inline uint16_t mavlink_msg_heartbeat_pack(uint8_t system_id, uint8_t com
  * @param position  
  * @param dynamic  电位器值
  * @param speed  
- * @param stepmode  
+ * @param lockstate  上下限位状态
  * @param runstatus  外部PWM方式下的加减速状态
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_heartbeat_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   uint32_t tick,int32_t position,float dynamic,int32_t speed,uint8_t stepmode,uint8_t runstatus)
+                                   uint32_t tick,int32_t position,float dynamic,int32_t speed,uint8_t lockstate,uint8_t runstatus)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_HEARTBEAT_LEN];
@@ -117,7 +117,7 @@ static inline uint16_t mavlink_msg_heartbeat_pack_chan(uint8_t system_id, uint8_
     _mav_put_int32_t(buf, 4, position);
     _mav_put_float(buf, 8, dynamic);
     _mav_put_int32_t(buf, 12, speed);
-    _mav_put_uint8_t(buf, 16, stepmode);
+    _mav_put_uint8_t(buf, 16, lockstate);
     _mav_put_uint8_t(buf, 17, runstatus);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_HEARTBEAT_LEN);
@@ -127,7 +127,7 @@ static inline uint16_t mavlink_msg_heartbeat_pack_chan(uint8_t system_id, uint8_
     packet.position = position;
     packet.dynamic = dynamic;
     packet.speed = speed;
-    packet.stepmode = stepmode;
+    packet.lockstate = lockstate;
     packet.runstatus = runstatus;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_HEARTBEAT_LEN);
@@ -147,7 +147,7 @@ static inline uint16_t mavlink_msg_heartbeat_pack_chan(uint8_t system_id, uint8_
  */
 static inline uint16_t mavlink_msg_heartbeat_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_heartbeat_t* heartbeat)
 {
-    return mavlink_msg_heartbeat_pack(system_id, component_id, msg, heartbeat->tick, heartbeat->position, heartbeat->dynamic, heartbeat->speed, heartbeat->stepmode, heartbeat->runstatus);
+    return mavlink_msg_heartbeat_pack(system_id, component_id, msg, heartbeat->tick, heartbeat->position, heartbeat->dynamic, heartbeat->speed, heartbeat->lockstate, heartbeat->runstatus);
 }
 
 /**
@@ -161,7 +161,7 @@ static inline uint16_t mavlink_msg_heartbeat_encode(uint8_t system_id, uint8_t c
  */
 static inline uint16_t mavlink_msg_heartbeat_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_heartbeat_t* heartbeat)
 {
-    return mavlink_msg_heartbeat_pack_chan(system_id, component_id, chan, msg, heartbeat->tick, heartbeat->position, heartbeat->dynamic, heartbeat->speed, heartbeat->stepmode, heartbeat->runstatus);
+    return mavlink_msg_heartbeat_pack_chan(system_id, component_id, chan, msg, heartbeat->tick, heartbeat->position, heartbeat->dynamic, heartbeat->speed, heartbeat->lockstate, heartbeat->runstatus);
 }
 
 /**
@@ -172,12 +172,12 @@ static inline uint16_t mavlink_msg_heartbeat_encode_chan(uint8_t system_id, uint
  * @param position  
  * @param dynamic  电位器值
  * @param speed  
- * @param stepmode  
+ * @param lockstate  上下限位状态
  * @param runstatus  外部PWM方式下的加减速状态
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_heartbeat_send(mavlink_channel_t chan, uint32_t tick, int32_t position, float dynamic, int32_t speed, uint8_t stepmode, uint8_t runstatus)
+static inline void mavlink_msg_heartbeat_send(mavlink_channel_t chan, uint32_t tick, int32_t position, float dynamic, int32_t speed, uint8_t lockstate, uint8_t runstatus)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_HEARTBEAT_LEN];
@@ -185,7 +185,7 @@ static inline void mavlink_msg_heartbeat_send(mavlink_channel_t chan, uint32_t t
     _mav_put_int32_t(buf, 4, position);
     _mav_put_float(buf, 8, dynamic);
     _mav_put_int32_t(buf, 12, speed);
-    _mav_put_uint8_t(buf, 16, stepmode);
+    _mav_put_uint8_t(buf, 16, lockstate);
     _mav_put_uint8_t(buf, 17, runstatus);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HEARTBEAT, buf, MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN, MAVLINK_MSG_ID_HEARTBEAT_LEN, MAVLINK_MSG_ID_HEARTBEAT_CRC);
@@ -195,7 +195,7 @@ static inline void mavlink_msg_heartbeat_send(mavlink_channel_t chan, uint32_t t
     packet.position = position;
     packet.dynamic = dynamic;
     packet.speed = speed;
-    packet.stepmode = stepmode;
+    packet.lockstate = lockstate;
     packet.runstatus = runstatus;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HEARTBEAT, (const char *)&packet, MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN, MAVLINK_MSG_ID_HEARTBEAT_LEN, MAVLINK_MSG_ID_HEARTBEAT_CRC);
@@ -210,7 +210,7 @@ static inline void mavlink_msg_heartbeat_send(mavlink_channel_t chan, uint32_t t
 static inline void mavlink_msg_heartbeat_send_struct(mavlink_channel_t chan, const mavlink_heartbeat_t* heartbeat)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_heartbeat_send(chan, heartbeat->tick, heartbeat->position, heartbeat->dynamic, heartbeat->speed, heartbeat->stepmode, heartbeat->runstatus);
+    mavlink_msg_heartbeat_send(chan, heartbeat->tick, heartbeat->position, heartbeat->dynamic, heartbeat->speed, heartbeat->lockstate, heartbeat->runstatus);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HEARTBEAT, (const char *)heartbeat, MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN, MAVLINK_MSG_ID_HEARTBEAT_LEN, MAVLINK_MSG_ID_HEARTBEAT_CRC);
 #endif
@@ -224,7 +224,7 @@ static inline void mavlink_msg_heartbeat_send_struct(mavlink_channel_t chan, con
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_heartbeat_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint32_t tick, int32_t position, float dynamic, int32_t speed, uint8_t stepmode, uint8_t runstatus)
+static inline void mavlink_msg_heartbeat_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint32_t tick, int32_t position, float dynamic, int32_t speed, uint8_t lockstate, uint8_t runstatus)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
@@ -232,7 +232,7 @@ static inline void mavlink_msg_heartbeat_send_buf(mavlink_message_t *msgbuf, mav
     _mav_put_int32_t(buf, 4, position);
     _mav_put_float(buf, 8, dynamic);
     _mav_put_int32_t(buf, 12, speed);
-    _mav_put_uint8_t(buf, 16, stepmode);
+    _mav_put_uint8_t(buf, 16, lockstate);
     _mav_put_uint8_t(buf, 17, runstatus);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HEARTBEAT, buf, MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN, MAVLINK_MSG_ID_HEARTBEAT_LEN, MAVLINK_MSG_ID_HEARTBEAT_CRC);
@@ -242,7 +242,7 @@ static inline void mavlink_msg_heartbeat_send_buf(mavlink_message_t *msgbuf, mav
     packet->position = position;
     packet->dynamic = dynamic;
     packet->speed = speed;
-    packet->stepmode = stepmode;
+    packet->lockstate = lockstate;
     packet->runstatus = runstatus;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_HEARTBEAT, (const char *)packet, MAVLINK_MSG_ID_HEARTBEAT_MIN_LEN, MAVLINK_MSG_ID_HEARTBEAT_LEN, MAVLINK_MSG_ID_HEARTBEAT_CRC);
@@ -296,11 +296,11 @@ static inline int32_t mavlink_msg_heartbeat_get_speed(const mavlink_message_t* m
 }
 
 /**
- * @brief Get field stepmode from heartbeat message
+ * @brief Get field lockstate from heartbeat message
  *
- * @return  
+ * @return  上下限位状态
  */
-static inline uint8_t mavlink_msg_heartbeat_get_stepmode(const mavlink_message_t* msg)
+static inline uint8_t mavlink_msg_heartbeat_get_lockstate(const mavlink_message_t* msg)
 {
     return _MAV_RETURN_uint8_t(msg,  16);
 }
@@ -328,7 +328,7 @@ static inline void mavlink_msg_heartbeat_decode(const mavlink_message_t* msg, ma
     heartbeat->position = mavlink_msg_heartbeat_get_position(msg);
     heartbeat->dynamic = mavlink_msg_heartbeat_get_dynamic(msg);
     heartbeat->speed = mavlink_msg_heartbeat_get_speed(msg);
-    heartbeat->stepmode = mavlink_msg_heartbeat_get_stepmode(msg);
+    heartbeat->lockstate = mavlink_msg_heartbeat_get_lockstate(msg);
     heartbeat->runstatus = mavlink_msg_heartbeat_get_runstatus(msg);
 #else
         uint8_t len = msg->len < MAVLINK_MSG_ID_HEARTBEAT_LEN? msg->len : MAVLINK_MSG_ID_HEARTBEAT_LEN;

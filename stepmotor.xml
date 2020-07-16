@@ -29,6 +29,11 @@
       <entry value="18" name="SMCMD_ENABLE"/>
       <entry value="19" name="SMCMD_DISABLE" />
       <entry value="20" name="SMCMD_SETSTEPMODE" />
+      <entry value="21" name="SMCMD_UNLOCKUP" />
+      <entry value="22" name="SMCMD_UNLOCKDOWN" />
+      <entry value="23" name="SMCMD_SCANUPDOWNLOCK" />
+      <entry value="24" name="SMCMD_SETUPLOCKPOS" />
+      <entry value="25" name="SMCMD_SETDOWNLOCKPOS" />
     </enum>
     
     
@@ -47,7 +52,7 @@
       <field type="int32_t" name="position"></field>
       <field type="float" name="dynamic">电位器值</field>
       <field type="int32_t" name="speed" ></field>
-      <field type="uint8_t" name="stepmode" />
+      <field type="uint8_t" name="lockstate">上下限位状态</field>
       <field type="uint8_t" name="runstatus" enum="EMOTORSTATE">外部PWM方式下的加减速状态</field>
     </message>
     <message id="1" name="CONFIG">
@@ -61,6 +66,8 @@
       <field type="uint16_t" name="config" />
       <field type="uint32_t" name="mark">Mark Position</field>
       <field type="uint8_t" name="isRboot">是否刚重启</field>
+      <field type="int32_t" name="uppos">上限位位置</field>
+      <field type="int32_t" name="downpos">下限位位置</field>
     </message>
     <message id="2" name="RUNCMD">
       <field type="uint32_t" name="cmd" enum="SMCMD"/>

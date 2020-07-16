@@ -74,7 +74,66 @@ SlaveThread::SlaveThread(QObject *parent) :
     connect(this,&SlaveThread::cmdProg, this , &SlaveThread::sltCmdProg);
     connect(this,&SlaveThread::setTVal, this, &SlaveThread::sendSetTVal);
     connect(this, &SlaveThread::setStepMode, this ,&SlaveThread::sendStepMode);
+    connect(this, &SlaveThread::setUpPos, this ,&SlaveThread::sltSetUpPos);
+    connect(this, &SlaveThread::setDownPos, this, &SlaveThread::sltSetDownPos);
 }
+
+void SlaveThread::sltSetUpPos(int uppos)
+{
+    mavlink_message_t msg;
+    uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+    mavlink_runcmd_t runcmd;
+    memset(&runcmd,0,sizeof(runcmd));
+    runcmd.cmd = SMCMD_SETUPLOCKPOS;
+    runcmd.distance = uppos;
+    mavlink_msg_runcmd_encode(1,1,&msg,&runcmd);
+    unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
+    if(!m_quit && pserial&& pserial->isOpen()){
+        int sendlen = pserial->write((const char *)&buffer,len);
+        emit this->information(tr("Send Set UpLock Position Cmd %1 size %2").arg(uppos).arg(sendlen));
+    }
+    else{
+        emit this->error(QString("Send Failed!"));
+    }
+}
+
+void SlaveThread::sltScanUpDown()
+{
+    mavlink_message_t msg;
+    uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+    mavlink_runcmd_t runcmd;
+    memset(&runcmd,0,sizeof(runcmd));
+    runcmd.cmd = SMCMD_SCANUPDOWNLOCK;
+    mavlink_msg_runcmd_encode(1,1,&msg,&runcmd);
+    unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
+    if(!m_quit && pserial&& pserial->isOpen()){
+        int sendlen = pserial->write((const char *)&buffer,len);
+        emit this->information(tr("Send ScanUpDown Cmd size %1").arg(sendlen));
+    }
+    else{
+        emit this->error(QString("Send Failed!"));
+    }
+}
+
+void SlaveThread::sltSetDownPos(int downpos)
+{
+    mavlink_message_t msg;
+    uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+    mavlink_runcmd_t runcmd;
+    memset(&runcmd,0,sizeof(runcmd));
+    runcmd.cmd = SMCMD_SETDOWNLOCKPOS;
+    runcmd.distance = downpos;
+    mavlink_msg_runcmd_encode(1,1,&msg,&runcmd);
+    unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
+    if(!m_quit && pserial&& pserial->isOpen()){
+        int sendlen = pserial->write((const char *)&buffer,len);
+        emit this->information(tr("Send Set DownLock Position Cmd %1 size %2").arg(downpos).arg(sendlen));
+    }
+    else{
+        emit this->error(QString("Send Failed!"));
+    }
+}
+
 
 void SlaveThread::sendStepMode(int value)
 {
@@ -146,6 +205,42 @@ void SlaveThread::sendSetTVal(int value)
     if(!m_quit && pserial&& pserial->isOpen()){
         int sendlen = pserial->write((const char *)&buffer,len);
         emit this->information(tr("Send Set TVal Cmd %1 size %2").arg(value).arg(sendlen));
+    }
+    else{
+        emit this->error("Send Failed!");
+    }
+}
+
+void SlaveThread::sltUnlockUp()
+{
+    mavlink_message_t msg;
+    uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+    mavlink_runcmd_t runcmd;
+    memset(&runcmd,0,sizeof(runcmd));
+    runcmd.cmd = SMCMD_UNLOCKUP;
+    mavlink_msg_runcmd_encode(1,1,&msg,&runcmd);
+    unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
+    if(!m_quit && pserial&& pserial->isOpen()){
+        int sendlen = pserial->write((const char *)&buffer,len);
+        emit this->information(tr("Send Enable size %1").arg(sendlen));
+    }
+    else{
+        emit this->error("Send Failed!");
+    }
+}
+
+void SlaveThread::sltUnlockDown()
+{
+    mavlink_message_t msg;
+    uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+    mavlink_runcmd_t runcmd;
+    memset(&runcmd,0,sizeof(runcmd));
+    runcmd.cmd = SMCMD_UNLOCKDOWN;
+    mavlink_msg_runcmd_encode(1,1,&msg,&runcmd);
+    unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
+    if(!m_quit && pserial&& pserial->isOpen()){
+        int sendlen = pserial->write((const char *)&buffer,len);
+        emit this->information(tr("Send Enable size %1").arg(sendlen));
     }
     else{
         emit this->error("Send Failed!");
@@ -573,7 +668,7 @@ void SlaveThread::run()
                         mavlink_msg_heartbeat_decode(&message,&hbt);
                         emit this->hbPack(hbt);
                         //QDateTime nowtime = QDateTime::currentDateTime();
-                        (*pHbStream) << hbt.tick << ","  << hbt.position << "," << hbt.speed << endl;
+                        (*pHbStream) << hbt.tick << ","  << hbt.position << "," << hbt.speed <<"," << hbt.dynamic << endl;
                         //QString request = QString("speed %1 pos %2").arg(hbt.speed).arg(hbt.position);
                         //emit this->request(request);
                         break;

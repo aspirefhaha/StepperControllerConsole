@@ -87,6 +87,8 @@ signals:
     void setMark(int value);
     void setMaxSpeed(int value);
     void setAcc(int acc);
+    void setUpPos(int uppos);
+    void setDownPos(int downpos);
     void setDec(int acc);
     void goPos(int value);
     void cmdProg(int cmd);
@@ -121,9 +123,14 @@ public slots:
     void sltSetDec(int value);
     void sltGoPos(int value);
     void sltCmdProg(int cmd);
+    void sltSetUpPos(int uppos);
+    void sltSetDownPos(int downpos);
     void sltEnableController();
+    void sltUnlockUp();
+    void sltUnlockDown();
     void sltDisableController();
     void sendStepMode(int value);
+    void sltScanUpDown();
 
 };
 //! [0]

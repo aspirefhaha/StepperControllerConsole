@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 #ifndef MAVLINK_MESSAGE_CRCS
-#define MAVLINK_MESSAGE_CRCS {{0, 105, 18, 18, 0, 0, 0}, {1, 117, 26, 26, 0, 0, 0}, {2, 34, 12, 12, 0, 0, 0}, {3, 119, 2, 2, 0, 0, 0}, {300, 217, 22, 22, 0, 0, 0}}
+#define MAVLINK_MESSAGE_CRCS {{0, 62, 18, 18, 0, 0, 0}, {1, 230, 34, 34, 0, 0, 0}, {2, 34, 12, 12, 0, 0, 0}, {3, 119, 2, 2, 0, 0, 0}, {300, 217, 22, 22, 0, 0, 0}}
 #endif
 
 #include "../protocol.h"
@@ -60,7 +60,12 @@ typedef enum SMCMD
    SMCMD_ENABLE=18, /*  | */
    SMCMD_DISABLE=19, /*  | */
    SMCMD_SETSTEPMODE=20, /*  | */
-   SMCMD_ENUM_END=21, /*  | */
+   SMCMD_UNLOCKUP=21, /*  | */
+   SMCMD_UNLOCKDOWN=22, /*  | */
+   SMCMD_SCANUPDOWNLOCK=23, /*  | */
+   SMCMD_SETUPLOCKPOS=24, /*  | */
+   SMCMD_SETDOWNLOCKPOS=25, /*  | */
+   SMCMD_ENUM_END=26, /*  | */
 } SMCMD;
 #endif
 

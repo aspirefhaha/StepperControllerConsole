@@ -12,7 +12,7 @@
 #include <QGraphicsLayout>
 #include "ui_mainwindow.h"
 
-#define TIMESPAN 10.0
+#define TIMESPAN 40.0
 #define TIMERFREQ 30   // ms
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -66,11 +66,13 @@ MainWindow::MainWindow(QWidget *parent) :
     QColor pointer2Color = QColor(100,181,180,200);            //指针2颜色
     //m_serie1->setColor(pointer1Color);
     //m_serie2->setColor(red);
-    QBrush brush(ui->gaugeCar->getPointerColor());
+    QBrush brush(ui->angleGauge->getPointer1Color());
     QPen sePen(brush,2);
     m_serie1->setPen(sePen);
     sePen.setColor(pointer2Color);
-    m_serie2->setPen(sePen);
+    QBrush brush2(ui->angleGauge->getPointer2Color());
+    QPen sePen2(brush2,2);
+    m_serie2->setPen(sePen2);
 #if 0
     for(int i=0;i<5000;++i){
        m_serie1->append(i,0);
@@ -83,12 +85,13 @@ MainWindow::MainWindow(QWidget *parent) :
     m_serie2->setUseOpenGL(true);
     QValueAxis *axisX = new QValueAxis;
     m_value1Points.clear();
+    m_value2Points.clear();
     axisX->setRange(0,TIMESPAN);
     axisX->setLabelFormat("%g");
     axisX->setTitleText("axisX");
 
     QValueAxis *axisY = new QValueAxis;
-    axisY->setRange(0,400.0);
+    axisY->setRange(-200,600);
     axisY->setTitleText("axisY");
 
     m_chart->setAxisX(axisX,m_serie1);
@@ -125,13 +128,75 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pbMoveMark, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltGoMark);
     connect(ui->pbEnable, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltEnableController);
     connect(ui->pbDisable, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltDisableController);
-
+    connect(ui->pbUnlockUp, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltUnlockUp);
+    connect(ui->pbUnlockDown, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltUnlockDown);
+    connect(ui->pbScanUpDown, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltScanUpDown);
     connect(ui->cbSerialPort,SIGNAL(currentTextChanged(QString)),this,SLOT(sltPortChanged(QString)));
     connect(ui->cbBaudRate,SIGNAL(currentTextChanged(QString)),this,SLOT(sltBaudrateChanged(QString)));
+
     ui->dockBottom->installEventFilter(this);
     QTimer::singleShot(10,this,SLOT(onRestoreCatalogureView()));
     ReadSettings();
     timeId = startTimer(TIMERFREQ);
+}
+
+void MainWindow::sltTGChanged(bool selected)
+{
+    QRadioButton * selTGbtn = static_cast<QRadioButton*>(sender());
+    QString strSelTG = selTGbtn->text();
+    if(strSelTG.compare("1")==0){
+        ui->sbTVal->setValue(31);
+    }
+    else if(strSelTG.compare("1.2")==0){
+        ui->sbTVal->setValue(37);
+    }
+    else if(strSelTG.compare("1.4")==0){
+        ui->sbTVal->setValue(43);
+    }
+    else if(strSelTG.compare("1.6")==0){
+        ui->sbTVal->setValue(50);
+
+    }
+    else if(strSelTG.compare("1.8")==0){
+        ui->sbTVal->setValue(56);
+
+    }
+    else if(strSelTG.compare("2.0")==0){
+        ui->sbTVal->setValue(63);
+
+    }
+    else if(strSelTG.compare("2.2")==0){
+        ui->sbTVal->setValue(69);
+
+    }
+    else if(strSelTG.compare("2.4")==0){
+        ui->sbTVal->setValue(75);
+
+    }
+    else if(strSelTG.compare("2.6")==0){
+        ui->sbTVal->setValue(82);
+
+    }
+    else if(strSelTG.compare("2.8")==0){
+        ui->sbTVal->setValue(88);
+
+    }
+    if(strSelTG.compare("3.0")==0){
+        ui->sbTVal->setValue(95);
+
+    }
+
+}
+
+void MainWindow::sltFreqSelected(bool selected)
+{
+    //qDebug() << "selected : " << selected << " sender:" << sender() << endl;
+    QRadioButton * selfrqbtn = static_cast<QRadioButton*>(sender());
+    //qDebug() << "cast button " << selfrqbtn << endl;
+    if(selfrqbtn && selected){
+        ui->leMaxSpeed->setText(selfrqbtn->text());
+    }
+
 }
 
 bool MainWindow::eventFilter(QObject * obj,QEvent * event)
@@ -193,9 +258,9 @@ void MainWindow::onRestoreCatalogureView()
 
 void MainWindow::sltFire()
 {
-    pointMutex.lock();
-    m_value1Points.append(QPointF(1.0,2.5));
-    pointMutex.unlock();
+    //pointMutex.lock();
+    //m_value1Points.append(QPointF(1.0,2.5));
+    //pointMutex.unlock();
 }
 
 void MainWindow::timerEvent(QTimerEvent *event){
@@ -210,12 +275,15 @@ void MainWindow::timerEvent(QTimerEvent *event){
         static long int lasteltime = eltime; //pc端记录的上次时间
 
         if(isVisible()){
-            QVector<QPointF> oldPoints = m_serie1->pointsVector();
-            QVector<QPointF> points;
+            QVector<QPointF> oldPoints1 = m_serie1->pointsVector();
+            QVector<QPointF> oldPoints2 = m_serie2->pointsVector();
+            QVector<QPointF> points1;
+            QVector<QPointF> points2;
             if(isPeerReboot){
                 hasStart = false;
                 isPeerReboot = false;
-                oldPoints.clear();
+                oldPoints1.clear();
+                oldPoints2.clear();
             }
             pointMutex.lock();
             int pointsize = m_value1Points.size();
@@ -227,24 +295,38 @@ void MainWindow::timerEvent(QTimerEvent *event){
                 }
 
                 long int pcpasstime = eltime - syncTime;  //PC端从收到第一个数据到现在为止经过的时间
-                QVector<QPointF>::iterator iter = oldPoints.begin();
-                while(iter!= oldPoints.end()){
+                //QVector<QPointF>::iterator iter = oldPoints1.begin();
+                for(int j = 0 ;j < oldPoints1.size() && j < oldPoints2.size();j++){
+                    QPointF tpoint1 = oldPoints1.at(j);
+                    QPointF tpoint2 = oldPoints2.at(j);
+                    qreal newtime = tpoint1.x()  - (eltime - lasteltime) * 0.001;
+                    if(newtime>0){
+                        points1.append(QPointF(newtime,tpoint1.y()));
+                        points2.append(QPointF(newtime,tpoint2.y()));
+                    }
+                }
+#if 0
+                while(iter!= oldPoints1.end()){
                     qreal newtime = iter->x()  - (eltime - lasteltime) * 0.001;
                     if(newtime>0){
-                        points.append(QPointF(newtime,iter->y()));
+                        points1.append(QPointF(newtime,iter->y()));
                     }
 
                     iter++;
                 }
-                for(int i = 0 ;i< m_value1Points.size();i++){
-                    QPointF tpoint = m_value1Points.at(i);
-                    long int peerDataRelativeTime = tpoint.x() - syncPeerTime; //本条数据距离第一条数据经过的时间
+#endif
+                for(int i = 0 ;i< m_value1Points.size() && i < m_value2Points.size();i++){
+                    QPointF tpoint1 = m_value1Points.at(i);
+                    QPointF tpoint2 = m_value2Points.at(i);
+                    long int peerDataRelativeTime = tpoint1.x() - syncPeerTime; //本条数据距离第一条数据经过的时间
                     if(peerDataRelativeTime >= pcpasstime - (TIMESPAN * 1000)){
-                        points.append(QPointF((tpoint.x() - syncPeerTime - pcpasstime) / 1000.0 + TIMESPAN,tpoint.y()));
+                        points1.append(QPointF((tpoint1.x() - syncPeerTime - pcpasstime) / 1000.0 + TIMESPAN,tpoint1.y()));
+                        points2.append(QPointF((tpoint2.x() - syncPeerTime - pcpasstime) / 1000.0 + TIMESPAN,tpoint2.y()));
                     }
 
                 }
                 m_value1Points.clear();
+                m_value2Points.clear();
                 lasteltime = eltime;
             }
             pointMutex.unlock();
@@ -252,22 +334,27 @@ void MainWindow::timerEvent(QTimerEvent *event){
             if(pointsize<=0){ //没有新鲜数据
                 if(hasStart){ //已经开始计数了，但是上一个周期没有更新数据
                     //时间已经过去，更新原来的点的时间，并加上最后一个点
-                    int oldlen = oldPoints.size();
-                    qreal lastyvalue = 0;
+                    int oldlen = oldPoints1.size();
+                    qreal lastyvalue1 = 0;
+                    qreal lastyvalue2 = 0;
                     for(int i = 0 ;i<oldlen;i++){
-                        QPointF oldPoint = oldPoints.at(i);
-                        qreal newtime = oldPoint.x() - (eltime - lasteltime) * 0.001;
-                        lastyvalue = oldPoint.y();
+                        const QPointF & oldPoint1 = oldPoints1.at(i);
+                        const QPointF & oldPoint2 = oldPoints2.at(i);
+                        qreal newtime = oldPoint1.x() - (eltime - lasteltime) * 0.001;
+                        lastyvalue1 = oldPoint1.y();
+                        lastyvalue2 = oldPoint2.y();
                         if( newtime > 0 ){
-                            points.append(QPointF(newtime,oldPoint.y()));
+                            points1.append(QPointF(newtime,oldPoint1.y()));
+                            points2.append(QPointF(newtime,oldPoint2.y()));
                         }
                     }
-                    points.append(QPointF(TIMESPAN- 0.001,lastyvalue));
+                    points1.append(QPointF(TIMESPAN- 0.001,lastyvalue1));
+                    points2.append(QPointF(TIMESPAN - 0.001,lastyvalue2));
                     lasteltime = eltime;
                 }
             }
-            m_serie1->replace(points);
-
+            m_serie1->replace(points1);
+            m_serie2->replace(points2);
         }
 
 
@@ -357,9 +444,21 @@ void MainWindow::parseL6474Status(const mavlink_l6474status_t & stpack)
     emit showInfo(QString("Get Status"));
 }
 
+void MainWindow::sltSetDownPos()
+{
+    int downpos = ui->leDownPos->text().toInt();
+    emit m_serialThread.setDownPos(downpos);
+}
+
+void MainWindow::sltSetUpPos()
+{
+    int uppos = ui->leUpPos->text().toInt();
+    emit m_serialThread.setUpPos(uppos);
+}
+
 void MainWindow::parseHeartBeat(const mavlink_heartbeat_t & hbpack)
 {
-
+    static double lastcalcvalue = 0;
     QString strRunMode = "未知";
 
     switch(hbpack.runstatus){
@@ -378,24 +477,61 @@ void MainWindow::parseHeartBeat(const mavlink_heartbeat_t & hbpack)
     }
     ui->lbRunStatus->setText(strRunMode);
 
-    ui->lePosition->setText(QString::number(hbpack.position));
+    ui->lePosition->setText(QString("%1 : %2").arg(QString::number(hbpack.position)).arg(hbpack.dynamic));
     double position = hbpack.position % this->stepPerCirclr;
     if(position < 0){
         position += this->stepPerCirclr;
     }
     ui->angleGauge->setValue1( position);
-    ui->angleGauge->setValue2(hbpack.dynamic * this->stepPerCirclr);
+    double gd = hbpack.dynamic; //get dynamic
+    //-4.135146962689689  -6.463601702740690   4.291353954379819
+
+    double calcvalue = (gd * gd * -413.5146962689689 + gd * -646.3601702740690 +  429.1353954379819) ;
+    if(fabs(gd - 1.0)<1e-10){
+        calcvalue = lastcalcvalue;
+    }
+    else{
+        lastcalcvalue = calcvalue;
+    }
+    ui->angleGauge->setValue2(calcvalue);
     emit ui->angleGauge->valueChanged();
 
     ui->leAngleSpeed->setText(QString::number(hbpack.speed));
     ui->gaugeCar->setValue( (double)hbpack.speed);
     emit ui->gaugeCar->valueChanged();
 
+    qreal pos = (hbpack.position % 400);
     QPointF value1point((qreal)hbpack.tick,(qreal)hbpack.position);
+    qint32 dispvalue = calcvalue * 100000;
+    dispvalue %= 40000000;
+    calcvalue = dispvalue / 100000.0;
+    QPointF value2point((qreal)hbpack.tick,(qreal)calcvalue);
     pointMutex.lock();
     m_value1Points.append(value1point);
+    m_value2Points.append(value2point);
     pointMutex.unlock();
 
+    ui->cbUpLock->setChecked(hbpack.lockstate & 0x1);
+
+    ui->pbUnlockUp->setEnabled(hbpack.lockstate & 0x1);
+
+    ui->cbDownLock->setChecked(hbpack.lockstate & 0x2);
+
+    ui->pbUnlockDown->setEnabled(hbpack.lockstate & 0x2);
+
+    int upPos = ui->leUpPos->text().toInt();
+    int downPos = ui->leDownPos->text().toInt();
+
+    if(upPos == 0){
+        upPos = 400;
+    }
+    if(upPos < downPos){
+        upPos = downPos + 1;
+    }
+    if(hbpack.position >= downPos && hbpack.position <= upPos){
+        ui->valueOpening->setValue( ((double)hbpack.position - downPos) * 100.0 / (upPos - downPos) );
+        emit ui->valueOpening->valueChanged();
+    }
 }
 
 void MainWindow::sltTValChanged(int newval)
@@ -433,6 +569,11 @@ void MainWindow::parseConfig(const mavlink_config_t &confpack)
     ui->angleGauge->setMaxValue(stepPerCirclr);
 
     ui->cbStepMode->setCurrentIndex(step_mode);
+    ui->gbFreq->setEnabled(true);
+    ui->gbTorque->setEnabled(true);
+
+    ui->leUpPos->setText(QString::number(confpack.uppos));
+    ui->leDownPos->setText(QString::number(confpack.downpos));
 
 }
 

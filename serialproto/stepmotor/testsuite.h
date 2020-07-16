@@ -45,7 +45,7 @@ static void mavlink_test_heartbeat(uint8_t system_id, uint8_t component_id, mavl
         packet1.position = packet_in.position;
         packet1.dynamic = packet_in.dynamic;
         packet1.speed = packet_in.speed;
-        packet1.stepmode = packet_in.stepmode;
+        packet1.lockstate = packet_in.lockstate;
         packet1.runstatus = packet_in.runstatus;
         
         
@@ -61,12 +61,12 @@ static void mavlink_test_heartbeat(uint8_t system_id, uint8_t component_id, mavl
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_heartbeat_pack(system_id, component_id, &msg , packet1.tick , packet1.position , packet1.dynamic , packet1.speed , packet1.stepmode , packet1.runstatus );
+    mavlink_msg_heartbeat_pack(system_id, component_id, &msg , packet1.tick , packet1.position , packet1.dynamic , packet1.speed , packet1.lockstate , packet1.runstatus );
     mavlink_msg_heartbeat_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_heartbeat_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.tick , packet1.position , packet1.dynamic , packet1.speed , packet1.stepmode , packet1.runstatus );
+    mavlink_msg_heartbeat_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.tick , packet1.position , packet1.dynamic , packet1.speed , packet1.lockstate , packet1.runstatus );
     mavlink_msg_heartbeat_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
@@ -79,7 +79,7 @@ static void mavlink_test_heartbeat(uint8_t system_id, uint8_t component_id, mavl
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
         
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_heartbeat_send(MAVLINK_COMM_1 , packet1.tick , packet1.position , packet1.dynamic , packet1.speed , packet1.stepmode , packet1.runstatus );
+    mavlink_msg_heartbeat_send(MAVLINK_COMM_1 , packet1.tick , packet1.position , packet1.dynamic , packet1.speed , packet1.lockstate , packet1.runstatus );
     mavlink_msg_heartbeat_decode(last_msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
@@ -96,7 +96,7 @@ static void mavlink_test_config(uint8_t system_id, uint8_t component_id, mavlink
         uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
         uint16_t i;
     mavlink_config_t packet_in = {
-        963497464,963497672,963497880,963498088,963498296,18275,199,10,77,144
+        963497464,963497672,963497880,963498088,963498296,963498504,963498712,18691,223,34,101,168
     };
     mavlink_config_t packet1, packet2;
         memset(&packet1, 0, sizeof(packet1));
@@ -105,6 +105,8 @@ static void mavlink_test_config(uint8_t system_id, uint8_t component_id, mavlink
         packet1.maxspeed = packet_in.maxspeed;
         packet1.minspeed = packet_in.minspeed;
         packet1.mark = packet_in.mark;
+        packet1.uppos = packet_in.uppos;
+        packet1.downpos = packet_in.downpos;
         packet1.config = packet_in.config;
         packet1.stepmode = packet_in.stepmode;
         packet1.ocdth = packet_in.ocdth;
@@ -124,12 +126,12 @@ static void mavlink_test_config(uint8_t system_id, uint8_t component_id, mavlink
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_config_pack(system_id, component_id, &msg , packet1.acc , packet1.dec , packet1.maxspeed , packet1.minspeed , packet1.stepmode , packet1.ocdth , packet1.tval , packet1.config , packet1.mark , packet1.isRboot );
+    mavlink_msg_config_pack(system_id, component_id, &msg , packet1.acc , packet1.dec , packet1.maxspeed , packet1.minspeed , packet1.stepmode , packet1.ocdth , packet1.tval , packet1.config , packet1.mark , packet1.isRboot , packet1.uppos , packet1.downpos );
     mavlink_msg_config_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_config_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.acc , packet1.dec , packet1.maxspeed , packet1.minspeed , packet1.stepmode , packet1.ocdth , packet1.tval , packet1.config , packet1.mark , packet1.isRboot );
+    mavlink_msg_config_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.acc , packet1.dec , packet1.maxspeed , packet1.minspeed , packet1.stepmode , packet1.ocdth , packet1.tval , packet1.config , packet1.mark , packet1.isRboot , packet1.uppos , packet1.downpos );
     mavlink_msg_config_decode(&msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 
@@ -142,7 +144,7 @@ static void mavlink_test_config(uint8_t system_id, uint8_t component_id, mavlink
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
         
         memset(&packet2, 0, sizeof(packet2));
-    mavlink_msg_config_send(MAVLINK_COMM_1 , packet1.acc , packet1.dec , packet1.maxspeed , packet1.minspeed , packet1.stepmode , packet1.ocdth , packet1.tval , packet1.config , packet1.mark , packet1.isRboot );
+    mavlink_msg_config_send(MAVLINK_COMM_1 , packet1.acc , packet1.dec , packet1.maxspeed , packet1.minspeed , packet1.stepmode , packet1.ocdth , packet1.tval , packet1.config , packet1.mark , packet1.isRboot , packet1.uppos , packet1.downpos );
     mavlink_msg_config_decode(last_msg, &packet2);
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }

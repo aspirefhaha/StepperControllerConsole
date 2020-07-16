@@ -39,6 +39,8 @@ protected slots:
     void parseHeartBeat(const mavlink_heartbeat_t &);
     void parseL6474Status(const mavlink_l6474status_t &);
     void onRestoreCatalogureView();
+    void sltFreqSelected(bool);
+    void sltTGChanged(bool);
 
 private slots:
     void sltBaudrateChanged(QString newvalue);
@@ -55,6 +57,8 @@ private slots:
     void sltSetTVal();
     void sltSetMode();
     void sltFire();
+    void sltSetUpPos();
+    void sltSetDownPos();
 
 private:
     Ui::MainWindow *ui;
@@ -64,6 +68,7 @@ private:
     QLineSeries * m_serie1;
     QLineSeries * m_serie2;
     QVector<QPointF> m_value1Points;
+    QVector<QPointF> m_value2Points;
     QMutex pointMutex;
     bool isPeerReboot;
     int timeId;
