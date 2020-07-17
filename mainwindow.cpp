@@ -486,7 +486,7 @@ void MainWindow::parseHeartBeat(const mavlink_heartbeat_t & hbpack)
     double gd = hbpack.dynamic; //get dynamic
     //-4.135146962689689  -6.463601702740690   4.291353954379819
 
-    double calcvalue = (gd * gd * -413.5146962689689 + gd * -646.3601702740690 +  429.1353954379819) ;
+    double calcvalue = -(gd * gd * 31.73759 + gd * 382.44 +  -0.6392) /2;
     if(fabs(gd - 1.0)<1e-10){
         calcvalue = lastcalcvalue;
     }
@@ -504,7 +504,7 @@ void MainWindow::parseHeartBeat(const mavlink_heartbeat_t & hbpack)
     QPointF value1point((qreal)hbpack.tick,(qreal)hbpack.position);
     qint32 dispvalue = calcvalue * 100000;
     dispvalue %= 40000000;
-    calcvalue = dispvalue / 100000.0;
+    calcvalue = dispvalue / 100000.0+400.0;
     QPointF value2point((qreal)hbpack.tick,(qreal)calcvalue);
     pointMutex.lock();
     m_value1Points.append(value1point);
