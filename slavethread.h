@@ -63,6 +63,7 @@
 Q_DECLARE_METATYPE(mavlink_config_t);
 Q_DECLARE_METATYPE(mavlink_heartbeat_t);
 Q_DECLARE_METATYPE(mavlink_l6474status_t);
+Q_DECLARE_METATYPE(mavlink_custstep_t);
 
 class SlaveThread : public QThread
 {
@@ -83,6 +84,7 @@ signals:
     void configPack(const mavlink_config_t&);
     void statusPack(const mavlink_l6474status_t&);
     void hbPack(const mavlink_heartbeat_t&);
+    void CustStepPack(const mavlink_custstep_t&);
     void moveStep(int dir, int step);
     void setMark(int value);
     void setMaxSpeed(int value);
@@ -95,6 +97,7 @@ signals:
     void getStatus();
     void setTVal(int value);
     void setStepMode(int value);
+    void sendCust(uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t);
 
 private:
     void run() override;
@@ -131,6 +134,9 @@ public slots:
     void sltDisableController();
     void sendStepMode(int value);
     void sltScanUpDown();
+    void sltTurnOn();
+    void sltGetCust();
+    void sltSendCust(uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t);
 
 };
 //! [0]

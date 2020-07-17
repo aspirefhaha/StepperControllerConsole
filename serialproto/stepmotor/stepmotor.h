@@ -24,7 +24,7 @@ extern "C" {
 #endif
 
 #ifndef MAVLINK_MESSAGE_CRCS
-#define MAVLINK_MESSAGE_CRCS {{0, 62, 18, 18, 0, 0, 0}, {1, 230, 34, 34, 0, 0, 0}, {2, 34, 12, 12, 0, 0, 0}, {3, 119, 2, 2, 0, 0, 0}, {300, 217, 22, 22, 0, 0, 0}}
+#define MAVLINK_MESSAGE_CRCS {{0, 62, 18, 18, 0, 0, 0}, {1, 230, 34, 34, 0, 0, 0}, {2, 34, 12, 12, 0, 0, 0}, {3, 119, 2, 2, 0, 0, 0}, {4, 160, 40, 40, 0, 0, 0}, {300, 217, 22, 22, 0, 0, 0}}
 #endif
 
 #include "../protocol.h"
@@ -65,7 +65,9 @@ typedef enum SMCMD
    SMCMD_SCANUPDOWNLOCK=23, /*  | */
    SMCMD_SETUPLOCKPOS=24, /*  | */
    SMCMD_SETDOWNLOCKPOS=25, /*  | */
-   SMCMD_ENUM_END=26, /*  | */
+   SMCMD_STARTENGINE=26, /*  | */
+   SMCMD_GETCUSTSTEP=27, /*  | */
+   SMCMD_ENUM_END=28, /*  | */
 } SMCMD;
 #endif
 
@@ -98,6 +100,7 @@ typedef enum EMOTORSTATE
 #include "./mavlink_msg_config.h"
 #include "./mavlink_msg_runcmd.h"
 #include "./mavlink_msg_l6474status.h"
+#include "./mavlink_msg_custstep.h"
 #include "./mavlink_msg_protocol_version.h"
 
 // base include
@@ -107,8 +110,8 @@ typedef enum EMOTORSTATE
 #define MAVLINK_THIS_XML_IDX 0
 
 #if MAVLINK_THIS_XML_IDX == MAVLINK_PRIMARY_XML_IDX
-# define MAVLINK_MESSAGE_INFO {MAVLINK_MESSAGE_INFO_HEARTBEAT, MAVLINK_MESSAGE_INFO_CONFIG, MAVLINK_MESSAGE_INFO_RUNCMD, MAVLINK_MESSAGE_INFO_L6474STATUS, MAVLINK_MESSAGE_INFO_PROTOCOL_VERSION}
-# define MAVLINK_MESSAGE_NAMES {{ "CONFIG", 1 }, { "HEARTBEAT", 0 }, { "L6474STATUS", 3 }, { "PROTOCOL_VERSION", 300 }, { "RUNCMD", 2 }}
+# define MAVLINK_MESSAGE_INFO {MAVLINK_MESSAGE_INFO_HEARTBEAT, MAVLINK_MESSAGE_INFO_CONFIG, MAVLINK_MESSAGE_INFO_RUNCMD, MAVLINK_MESSAGE_INFO_L6474STATUS, MAVLINK_MESSAGE_INFO_CUSTSTEP, MAVLINK_MESSAGE_INFO_PROTOCOL_VERSION}
+# define MAVLINK_MESSAGE_NAMES {{ "CONFIG", 1 }, { "CUSTSTEP", 4 }, { "HEARTBEAT", 0 }, { "L6474STATUS", 3 }, { "PROTOCOL_VERSION", 300 }, { "RUNCMD", 2 }}
 # if MAVLINK_COMMAND_24BIT
 #  include "../mavlink_get_info.h"
 # endif

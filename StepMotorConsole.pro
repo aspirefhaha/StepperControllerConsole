@@ -50,3 +50,6 @@ RESOURCES += \
 OTHER_FILES += myapp.rc
 
 RC_FILE += myapp.rc
+
+DISTFILES += \
+    stepmotor.xml

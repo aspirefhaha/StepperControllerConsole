@@ -259,6 +259,69 @@ static void mavlink_test_l6474status(uint8_t system_id, uint8_t component_id, ma
         MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
 }
 
+static void mavlink_test_custstep(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
+{
+#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
+    mavlink_status_t *status = mavlink_get_channel_status(MAVLINK_COMM_0);
+        if ((status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) && MAVLINK_MSG_ID_CUSTSTEP >= 256) {
+            return;
+        }
+#endif
+    mavlink_message_t msg;
+        uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+        uint16_t i;
+    mavlink_custstep_t packet_in = {
+        963497464,963497672,963497880,963498088,963498296,963498504,963498712,963498920,963499128,963499336
+    };
+    mavlink_custstep_t packet1, packet2;
+        memset(&packet1, 0, sizeof(packet1));
+        packet1.step1 = packet_in.step1;
+        packet1.step2 = packet_in.step2;
+        packet1.step3 = packet_in.step3;
+        packet1.step4 = packet_in.step4;
+        packet1.step5 = packet_in.step5;
+        packet1.wait1 = packet_in.wait1;
+        packet1.wait2 = packet_in.wait2;
+        packet1.wait3 = packet_in.wait3;
+        packet1.wait4 = packet_in.wait4;
+        packet1.wait5 = packet_in.wait5;
+        
+        
+#ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
+        if (status->flags & MAVLINK_STATUS_FLAG_OUT_MAVLINK1) {
+           // cope with extensions
+           memset(MAVLINK_MSG_ID_CUSTSTEP_MIN_LEN + (char *)&packet1, 0, sizeof(packet1)-MAVLINK_MSG_ID_CUSTSTEP_MIN_LEN);
+        }
+#endif
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_custstep_encode(system_id, component_id, &msg, &packet1);
+    mavlink_msg_custstep_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_custstep_pack(system_id, component_id, &msg , packet1.step1 , packet1.step2 , packet1.step3 , packet1.step4 , packet1.step5 , packet1.wait1 , packet1.wait2 , packet1.wait3 , packet1.wait4 , packet1.wait5 );
+    mavlink_msg_custstep_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_custstep_pack_chan(system_id, component_id, MAVLINK_COMM_0, &msg , packet1.step1 , packet1.step2 , packet1.step3 , packet1.step4 , packet1.step5 , packet1.wait1 , packet1.wait2 , packet1.wait3 , packet1.wait4 , packet1.wait5 );
+    mavlink_msg_custstep_decode(&msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+
+        memset(&packet2, 0, sizeof(packet2));
+        mavlink_msg_to_send_buffer(buffer, &msg);
+        for (i=0; i<mavlink_msg_get_send_buffer_length(&msg); i++) {
+            comm_send_ch(MAVLINK_COMM_0, buffer[i]);
+        }
+    mavlink_msg_custstep_decode(last_msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+        
+        memset(&packet2, 0, sizeof(packet2));
+    mavlink_msg_custstep_send(MAVLINK_COMM_1 , packet1.step1 , packet1.step2 , packet1.step3 , packet1.step4 , packet1.step5 , packet1.wait1 , packet1.wait2 , packet1.wait3 , packet1.wait4 , packet1.wait5 );
+    mavlink_msg_custstep_decode(last_msg, &packet2);
+        MAVLINK_ASSERT(memcmp(&packet1, &packet2, sizeof(packet1)) == 0);
+}
+
 static void mavlink_test_protocol_version(uint8_t system_id, uint8_t component_id, mavlink_message_t *last_msg)
 {
 #ifdef MAVLINK_STATUS_FLAG_OUT_MAVLINK1
@@ -323,6 +386,7 @@ static void mavlink_test_stepmotor(uint8_t system_id, uint8_t component_id, mavl
     mavlink_test_config(system_id, component_id, last_msg);
     mavlink_test_runcmd(system_id, component_id, last_msg);
     mavlink_test_l6474status(system_id, component_id, last_msg);
+    mavlink_test_custstep(system_id, component_id, last_msg);
     mavlink_test_protocol_version(system_id, component_id, last_msg);
 }
 

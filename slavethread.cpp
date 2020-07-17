@@ -65,6 +65,8 @@ SlaveThread::SlaveThread(QObject *parent) :
     qRegisterMetaType<mavlink_heartbeat_t>("mavlink_heartbeat_t&");
     qRegisterMetaType<mavlink_l6474status_t>("mavlink_l6474status_t");
     qRegisterMetaType<mavlink_l6474status_t>("mavlink_l6474status_t&");
+    qRegisterMetaType<mavlink_custstep_t>("mavlink_custstep_t");
+    qRegisterMetaType<mavlink_custstep_t>("mavlink_custstep_t&");
     connect(this,&SlaveThread::moveStep,this,&SlaveThread::sltMoveStep);
     connect(this,&SlaveThread::setMark, this, &SlaveThread::sltSetMark);
     connect(this,&SlaveThread::setMaxSpeed, this, &SlaveThread::sltSetMaxSpeed);
@@ -186,6 +188,70 @@ void SlaveThread::sltGoPos(int value)
     if(!m_quit && pserial&& pserial->isOpen()){
         int sendlen = pserial->write((const char *)&buffer,len);
         emit this->information(tr("Send GoPos %2 Cmd size %2").arg(value).arg(sendlen));
+    }
+    else{
+        emit this->error("Send Failed!");
+    }
+}
+
+void SlaveThread::sltSendCust(uint32_t wait1,uint32_t wait2,uint32_t wait3,uint32_t wait4,uint32_t wait5,
+                              uint32_t freq1,uint32_t freq2,uint32_t freq3,uint32_t freq4,uint32_t freq5)
+{
+    mavlink_message_t msg;
+    uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+    mavlink_custstep_t custstep;
+    memset(&custstep,0,sizeof(custstep));
+    custstep.step1 = freq1;
+    custstep.step2 = freq2 ;
+    custstep.step3 = freq3 ;
+    custstep.step4 = freq4 ;
+    custstep.step5 = freq5 ;
+    custstep.wait1 = wait1 ;
+    custstep.wait2 = wait2 ;
+    custstep.wait3 = wait3 ;
+    custstep.wait4 = wait4 ;
+    custstep.wait5 = wait5 ;
+    mavlink_msg_custstep_encode(1,1,&msg,&custstep);
+    unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
+    if(!m_quit && pserial&& pserial->isOpen()){
+        int sendlen = pserial->write((const char *)&buffer,len);
+        emit this->information(tr("Send Set CustStep %1").arg(sendlen));
+    }
+    else{
+        emit this->error("Send Failed!");
+    }
+}
+
+void SlaveThread::sltGetCust()
+{
+    mavlink_message_t msg;
+    uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+    mavlink_runcmd_t runcmd;
+    memset(&runcmd,0,sizeof(runcmd));
+    runcmd.cmd = SMCMD_GETCUSTSTEP;
+    mavlink_msg_runcmd_encode(1,1,&msg,&runcmd);
+    unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
+    if(!m_quit && pserial&& pserial->isOpen()){
+        int sendlen = pserial->write((const char *)&buffer,len);
+        emit this->information(tr("Send Get CustStep %1").arg(sendlen));
+    }
+    else{
+        emit this->error("Send Failed!");
+    }
+}
+
+void SlaveThread::sltTurnOn()
+{
+    mavlink_message_t msg;
+    uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+    mavlink_runcmd_t runcmd;
+    memset(&runcmd,0,sizeof(runcmd));
+    runcmd.cmd = SMCMD_STARTENGINE;
+    mavlink_msg_runcmd_encode(1,1,&msg,&runcmd);
+    unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
+    if(!m_quit && pserial&& pserial->isOpen()){
+        int sendlen = pserial->write((const char *)&buffer,len);
+        emit this->information(tr("Send TurnOn size %1").arg(sendlen));
     }
     else{
         emit this->error("Send Failed!");
@@ -662,6 +728,12 @@ void SlaveThread::run()
                 if(msgReceived){
 
                     switch(message.msgid){
+                    case MAVLINK_MSG_ID_CUSTSTEP:
+                    {
+                        mavlink_custstep_t custstep;
+                        mavlink_msg_custstep_decode(&message,&custstep);
+                        emit this->CustStepPack(custstep);
+                    }
                     case MAVLINK_MSG_ID_HEARTBEAT:
                     {
                         mavlink_heartbeat_t hbt;

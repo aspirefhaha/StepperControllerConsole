@@ -117,6 +117,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&m_serialThread, &SlaveThread::opensuccess, this,&MainWindow::openComSuccess);
     connect(&m_serialThread, &SlaveThread::configPack, this , &MainWindow::parseConfig);
     connect(&m_serialThread, &SlaveThread::statusPack, this, &MainWindow::parseL6474Status);
+    connect(&m_serialThread, &SlaveThread::CustStepPack, this, &MainWindow::parseCustStep);
     connect(&m_serialThread, &SlaveThread::hbPack, this, &MainWindow::parseHeartBeat);
     connect(ui->pbGetConfig, &QPushButton::clicked,&m_serialThread, &SlaveThread::sendGetConfigCMD);
     connect(ui->pbMoveFWD, &QPushButton::clicked , &m_serialThread, &SlaveThread::sendRunFWDCMD);
@@ -131,6 +132,8 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pbUnlockUp, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltUnlockUp);
     connect(ui->pbUnlockDown, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltUnlockDown);
     connect(ui->pbScanUpDown, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltScanUpDown);
+    connect(ui->pbTurnOn, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltTurnOn);
+    connect(ui->pbGetCust, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltGetCust);
     connect(ui->cbSerialPort,SIGNAL(currentTextChanged(QString)),this,SLOT(sltPortChanged(QString)));
     connect(ui->cbBaudRate,SIGNAL(currentTextChanged(QString)),this,SLOT(sltBaudrateChanged(QString)));
 
@@ -138,6 +141,23 @@ MainWindow::MainWindow(QWidget *parent) :
     QTimer::singleShot(10,this,SLOT(onRestoreCatalogureView()));
     ReadSettings();
     timeId = startTimer(TIMERFREQ);
+}
+
+void MainWindow::sltSetCust()
+{
+    uint32_t wait1,wait2,wait3,wait4,wait5;
+    uint32_t freq1,freq2,freq3,freq4,freq5;
+    wait1 = ui->leCustWait1->text().toUInt();
+    wait2 = ui->leCustWait2->text().toUInt();
+    wait3 = ui->leCustWait3->text().toUInt();
+    wait4 = ui->leCustWait4->text().toUInt();
+    wait5 = ui->leCustWait5->text().toUInt();
+    freq1 = ui->leCustFreq1->text().toUInt();
+    freq2 = ui->leCustFreq2->text().toUInt();
+    freq3 = ui->leCustFreq3->text().toUInt();
+    freq4 = ui->leCustFreq4->text().toUInt();
+    freq5 = ui->leCustFreq5->text().toUInt();
+    emit m_serialThread.sendCust(wait1,wait2,wait3,wait4,wait5,freq1,freq2,freq3,freq4,freq5);
 }
 
 void MainWindow::sltTGChanged(bool selected)
@@ -402,6 +422,20 @@ void MainWindow::sltSetMaxspeed()
     ui->gaugeCar->setMaxValue((double)maxspeed * 1.1);
 }
 
+void MainWindow::parseCustStep(const mavlink_custstep_t & custstep)
+{
+    ui->leCustFreq1->setText(QString::number(custstep.step1));
+    ui->leCustFreq2->setText(QString::number(custstep.step2));
+    ui->leCustFreq3->setText(QString::number(custstep.step3));
+    ui->leCustFreq4->setText(QString::number(custstep.step4));
+    ui->leCustFreq5->setText(QString::number(custstep.step5));
+    ui->leCustWait1->setText(QString::number(custstep.wait1));
+    ui->leCustWait2->setText(QString::number(custstep.wait2));
+    ui->leCustWait3->setText(QString::number(custstep.wait3));
+    ui->leCustWait4->setText(QString::number(custstep.wait4));
+    ui->leCustWait5->setText(QString::number(custstep.wait5));
+}
+
 void MainWindow::sltMoveStep()
 {
     int dir = 0 ;
@@ -487,7 +521,7 @@ void MainWindow::parseHeartBeat(const mavlink_heartbeat_t & hbpack)
     //-4.135146962689689  -6.463601702740690   4.291353954379819
 
     double calcvalue = -(gd * gd * 31.73759 + gd * 382.44 +  -0.6392) /2;
-    if(fabs(gd - 1.0)<1e-10){
+    if(fabs(fabs(gd) - 3.3) < 1e-10){
         calcvalue = lastcalcvalue;
     }
     else{
@@ -500,11 +534,12 @@ void MainWindow::parseHeartBeat(const mavlink_heartbeat_t & hbpack)
     ui->gaugeCar->setValue( (double)hbpack.speed);
     emit ui->gaugeCar->valueChanged();
 
-    qreal pos = (hbpack.position % 400);
+    //qreal pos = (hbpack.position % 400);
     QPointF value1point((qreal)hbpack.tick,(qreal)hbpack.position);
+
     qint32 dispvalue = calcvalue * 100000;
     dispvalue %= 40000000;
-    calcvalue = dispvalue / 100000.0+400.0;
+    calcvalue = dispvalue / 100000.0;
     QPointF value2point((qreal)hbpack.tick,(qreal)calcvalue);
     pointMutex.lock();
     m_value1Points.append(value1point);

@@ -38,6 +38,7 @@ protected slots:
     void parseConfig(const mavlink_config_t &);
     void parseHeartBeat(const mavlink_heartbeat_t &);
     void parseL6474Status(const mavlink_l6474status_t &);
+    void parseCustStep(const mavlink_custstep_t &);
     void onRestoreCatalogureView();
     void sltFreqSelected(bool);
     void sltTGChanged(bool);
@@ -59,6 +60,7 @@ private slots:
     void sltFire();
     void sltSetUpPos();
     void sltSetDownPos();
+    void sltSetCust();
 
 private:
     Ui::MainWindow *ui;

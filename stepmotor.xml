@@ -34,6 +34,8 @@
       <entry value="23" name="SMCMD_SCANUPDOWNLOCK" />
       <entry value="24" name="SMCMD_SETUPLOCKPOS" />
       <entry value="25" name="SMCMD_SETDOWNLOCKPOS" />
+      <entry value="26" name="SMCMD_STARTENGINE" />
+      <entry value="27" name="SMCMD_GETCUSTSTEP" />
     </enum>
     
     
@@ -76,6 +78,18 @@
     </message>
     <message id="3" name="L6474STATUS" >
       <field type="uint16_t" name="status"></field>  
+    </message>
+    <message id="4" name="CUSTSTEP">
+        <field type="uint32_t" name="step1" />
+        <field type="uint32_t" name="step2" />
+        <field type="uint32_t" name="step3" />
+        <field type="uint32_t" name="step4" />
+        <field type="uint32_t" name="step5" />
+        <field type="uint32_t" name="wait1" />
+        <field type="uint32_t" name="wait2" />
+        <field type="uint32_t" name="wait3" />
+        <field type="uint32_t" name="wait4" />
+        <field type="uint32_t" name="wait5" />
     </message>
     
     <message id="300" name="PROTOCOL_VERSION">
