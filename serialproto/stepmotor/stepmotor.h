@@ -67,7 +67,8 @@ typedef enum SMCMD
    SMCMD_SETDOWNLOCKPOS=25, /*  | */
    SMCMD_STARTENGINE=26, /*  | */
    SMCMD_GETCUSTSTEP=27, /*  | */
-   SMCMD_ENUM_END=28, /*  | */
+   SMCMD_STOPENGINE=28, /*  | */
+   SMCMD_ENUM_END=29, /*  | */
 } SMCMD;
 #endif
 

@@ -135,6 +135,7 @@ public slots:
     void sendStepMode(int value);
     void sltScanUpDown();
     void sltTurnOn();
+    void sltTurnOff();
     void sltGetCust();
     void sltSendCust(uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t);
 

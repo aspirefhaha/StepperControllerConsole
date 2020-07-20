@@ -36,6 +36,7 @@
       <entry value="25" name="SMCMD_SETDOWNLOCKPOS" />
       <entry value="26" name="SMCMD_STARTENGINE" />
       <entry value="27" name="SMCMD_GETCUSTSTEP" />
+      <entry value="28" name="SMCMD_STOPENGINE" />
     </enum>
     
     

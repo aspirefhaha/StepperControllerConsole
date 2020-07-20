@@ -3,6 +3,7 @@
         <file>StepMotorConsole.qm</file>
         <file>warning.png</file>
         <file>images/motorcon.png</file>
+        <file>images/motorcon.ico</file>
     </qresource>
     <qresource prefix="/image"/>
 </RCC>

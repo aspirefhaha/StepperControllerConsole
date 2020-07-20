@@ -133,6 +133,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pbUnlockDown, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltUnlockDown);
     connect(ui->pbScanUpDown, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltScanUpDown);
     connect(ui->pbTurnOn, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltTurnOn);
+    connect(ui->pbTurnOff, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltTurnOff);
     connect(ui->pbGetCust, &QPushButton::clicked, &m_serialThread, &SlaveThread::sltGetCust);
     connect(ui->cbSerialPort,SIGNAL(currentTextChanged(QString)),this,SLOT(sltPortChanged(QString)));
     connect(ui->cbBaudRate,SIGNAL(currentTextChanged(QString)),this,SLOT(sltBaudrateChanged(QString)));
@@ -520,7 +521,7 @@ void MainWindow::parseHeartBeat(const mavlink_heartbeat_t & hbpack)
     double gd = hbpack.dynamic; //get dynamic
     //-4.135146962689689  -6.463601702740690   4.291353954379819
 
-    double calcvalue = -(gd * gd * 31.73759 + gd * 382.44 +  -0.6392) /2;
+    double calcvalue = 400-(gd * gd * 31.73759 + gd * 382.44 +  -0.6392) /2 ;
     if(fabs(fabs(gd) - 3.3) < 1e-10){
         calcvalue = lastcalcvalue;
     }

@@ -78,6 +78,7 @@ SlaveThread::SlaveThread(QObject *parent) :
     connect(this, &SlaveThread::setStepMode, this ,&SlaveThread::sendStepMode);
     connect(this, &SlaveThread::setUpPos, this ,&SlaveThread::sltSetUpPos);
     connect(this, &SlaveThread::setDownPos, this, &SlaveThread::sltSetDownPos);
+    connect(this, &SlaveThread::sendCust, this , &SlaveThread::sltSendCust);
 }
 
 void SlaveThread::sltSetUpPos(int uppos)
@@ -234,6 +235,24 @@ void SlaveThread::sltGetCust()
     if(!m_quit && pserial&& pserial->isOpen()){
         int sendlen = pserial->write((const char *)&buffer,len);
         emit this->information(tr("Send Get CustStep %1").arg(sendlen));
+    }
+    else{
+        emit this->error("Send Failed!");
+    }
+}
+
+void SlaveThread::sltTurnOff()
+{
+    mavlink_message_t msg;
+    uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+    mavlink_runcmd_t runcmd;
+    memset(&runcmd,0,sizeof(runcmd));
+    runcmd.cmd = SMCMD_STOPENGINE;
+    mavlink_msg_runcmd_encode(1,1,&msg,&runcmd);
+    unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
+    if(!m_quit && pserial&& pserial->isOpen()){
+        int sendlen = pserial->write((const char *)&buffer,len);
+        emit this->information(tr("Send TurnOff size %1").arg(sendlen));
     }
     else{
         emit this->error("Send Failed!");
@@ -733,6 +752,7 @@ void SlaveThread::run()
                         mavlink_custstep_t custstep;
                         mavlink_msg_custstep_decode(&message,&custstep);
                         emit this->CustStepPack(custstep);
+                        break;
                     }
                     case MAVLINK_MSG_ID_HEARTBEAT:
                     {
