@@ -13,13 +13,15 @@
 #include "ui_mainwindow.h"
 
 #define TIMESPAN 40.0
-#define TIMERFREQ 30   // ms
+#define TIMERFREQ 50   // ms
+#define REDUCTIONRATIO  250
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow),stepPerCirclr(400),isPeerReboot(true)
 {
     ui->setupUi(this);
+    lastTick = 0;
     setWindowIcon(QIcon(":/images/motorcon.png"));
     qDebug() << "Current Thread" << QThread::currentThread();
     QStringList sts;
@@ -163,6 +165,7 @@ void MainWindow::sltSetCust()
 
 void MainWindow::sltTGChanged(bool selected)
 {
+    Q_UNUSED(selected);
     QRadioButton * selTGbtn = static_cast<QRadioButton*>(sender());
     QString strSelTG = selTGbtn->text();
     if(strSelTG.compare("1")==0){
@@ -302,6 +305,7 @@ void MainWindow::timerEvent(QTimerEvent *event){
             QVector<QPointF> points2;
             if(isPeerReboot){
                 hasStart = false;
+                lastTick = 0;
                 isPeerReboot = false;
                 oldPoints1.clear();
                 oldPoints2.clear();
@@ -513,10 +517,11 @@ void MainWindow::parseHeartBeat(const mavlink_heartbeat_t & hbpack)
     ui->lbRunStatus->setText(strRunMode);
 
     ui->lePosition->setText(QString("%1 : %2").arg(QString::number(hbpack.position)).arg(hbpack.dynamic));
-    double position = hbpack.position % this->stepPerCirclr;
+    double position = hbpack.position % (this->stepPerCirclr*REDUCTIONRATIO);
     if(position < 0){
-        position += this->stepPerCirclr;
+        position += (this->stepPerCirclr * REDUCTIONRATIO);
     }
+    position /= REDUCTIONRATIO;
     ui->angleGauge->setValue1( position);
     double gd = hbpack.dynamic; //get dynamic
     //-4.135146962689689  -6.463601702740690   4.291353954379819
@@ -536,16 +541,24 @@ void MainWindow::parseHeartBeat(const mavlink_heartbeat_t & hbpack)
     emit ui->gaugeCar->valueChanged();
 
     //qreal pos = (hbpack.position % 400);
-    QPointF value1point((qreal)hbpack.tick,(qreal)hbpack.position);
+    if(hbpack.tick > lastTick){
+        QPointF value1point((qreal)hbpack.tick,(qreal)(hbpack.position % (stepPerCirclr * REDUCTIONRATIO) * 400.0 / (stepPerCirclr * REDUCTIONRATIO)));
 
-    qint32 dispvalue = calcvalue * 100000;
-    dispvalue %= 40000000;
-    calcvalue = dispvalue / 100000.0;
-    QPointF value2point((qreal)hbpack.tick,(qreal)calcvalue);
-    pointMutex.lock();
-    m_value1Points.append(value1point);
-    m_value2Points.append(value2point);
-    pointMutex.unlock();
+        qint32 dispvalue = calcvalue * 100000;
+        dispvalue %= 40000000;
+        calcvalue = dispvalue / 100000.0;
+
+        //TODO del below
+        calcvalue = (3.3-gd) * 4.0 / 3.3 * 100.0;
+
+        QPointF value2point((qreal)hbpack.tick,(qreal)calcvalue);
+        pointMutex.lock();
+        m_value1Points.append(value1point);
+        m_value2Points.append(value2point);
+        pointMutex.unlock();
+        lastTick = hbpack.tick;
+    }
+
 
     ui->cbUpLock->setChecked(hbpack.lockstate & 0x1);
 

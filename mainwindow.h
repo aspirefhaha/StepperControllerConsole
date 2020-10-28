@@ -74,6 +74,7 @@ private:
     QMutex pointMutex;
     bool isPeerReboot;
     int timeId;
+    unsigned int lastTick;
 };
 
 #endif // MAINWINDOW_H

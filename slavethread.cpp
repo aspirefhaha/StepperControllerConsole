@@ -756,9 +756,13 @@ void SlaveThread::run()
                     }
                     case MAVLINK_MSG_ID_HEARTBEAT:
                     {
+                        static int sendtime = 0;
+
                         mavlink_heartbeat_t hbt;
                         mavlink_msg_heartbeat_decode(&message,&hbt);
-                        emit this->hbPack(hbt);
+                        //if((sendtime++ % 10) == 0){
+                            emit this->hbPack(hbt);
+                        //}
                         //QDateTime nowtime = QDateTime::currentDateTime();
                         (*pHbStream) << hbt.tick << ","  << hbt.position << "," << hbt.speed <<"," << hbt.dynamic << endl;
                         //QString request = QString("speed %1 pos %2").arg(hbt.speed).arg(hbt.position);
