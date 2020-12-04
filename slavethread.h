@@ -97,7 +97,7 @@ signals:
     void getStatus();
     void setTVal(int value);
     void setStepMode(int value);
-    void sendCust(uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t);
+    void sendCust(uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t);
 
 private:
     void run() override;
@@ -113,7 +113,7 @@ public slots:
     void sendGetConfigCMD();
     void sendRunFWDCMD();
     void sendSoftStop();
-    void sendRunBWCMD();
+    void sendRunBWDCMD();
     void sendHardStop();
     void sendSetHome();
     void sendSetTVal(int value);
@@ -137,7 +137,8 @@ public slots:
     void sltTurnOn();
     void sltTurnOff();
     void sltGetCust();
-    void sltSendCust(uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t);
+    void MoveFreqStepDir(int dir,int step,int freq);
+    void sltSendCust(uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t,uint32_t);
 
 };
 //! [0]

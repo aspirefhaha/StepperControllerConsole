@@ -56,6 +56,8 @@
 #include <QDebug>
 #include <QTextCodec>
 
+#define DEFAULTFREQ 300
+
 SlaveThread::SlaveThread(QObject *parent) :
     QThread(parent),pserial(NULL)/*,eventLoop(this)*/
 {
@@ -195,8 +197,8 @@ void SlaveThread::sltGoPos(int value)
     }
 }
 
-void SlaveThread::sltSendCust(uint32_t wait1,uint32_t wait2,uint32_t wait3,uint32_t wait4,uint32_t wait5,
-                              uint32_t freq1,uint32_t freq2,uint32_t freq3,uint32_t freq4,uint32_t freq5)
+void SlaveThread::sltSendCust(uint32_t wait1,uint32_t wait2,uint32_t wait3,uint32_t wait4,uint32_t wait5,uint32_t wait6,uint32_t wait7,
+                              uint32_t freq1,uint32_t freq2,uint32_t freq3,uint32_t freq4,uint32_t freq5,uint32_t freq6,uint32_t freq7)
 {
     mavlink_message_t msg;
     uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
@@ -207,11 +209,15 @@ void SlaveThread::sltSendCust(uint32_t wait1,uint32_t wait2,uint32_t wait3,uint3
     custstep.step3 = freq3 ;
     custstep.step4 = freq4 ;
     custstep.step5 = freq5 ;
+    custstep.step6 = freq6 ;
+    custstep.step7 = freq7 ;
     custstep.wait1 = wait1 ;
     custstep.wait2 = wait2 ;
     custstep.wait3 = wait3 ;
     custstep.wait4 = wait4 ;
     custstep.wait5 = wait5 ;
+    custstep.wait6 = wait6 ;
+    custstep.wait7 = wait7 ;
     mavlink_msg_custstep_encode(1,1,&msg,&custstep);
     unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
     if(!m_quit && pserial&& pserial->isOpen()){
@@ -485,6 +491,26 @@ void SlaveThread::sltSetMark(int value)
     }
 }
 
+void SlaveThread::MoveFreqStepDir(int dir,int step,int freq)
+{
+    mavlink_message_t msg;
+    uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
+    mavlink_runcmd_t runcmd;
+    memset(&runcmd,0,sizeof(runcmd));
+    runcmd.cmd = SMCMD_STEPFREQDIRMOVE;
+    runcmd.dir = dir;
+    runcmd.distance = step;
+    runcmd.freq = freq;
+    mavlink_msg_runcmd_encode(1,1,&msg,&runcmd);
+    unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
+    if(!m_quit && pserial&& pserial->isOpen()){
+        int sendlen = pserial->write((const char *)&buffer,len);
+        emit this->information(tr("Send MoveFreqStepDir Cmd dir %1 step %2 size %1").arg(dir).arg(step).arg(sendlen));
+    }
+    else{
+        emit this->error("Send Failed!");
+    }
+}
 
 void SlaveThread::sltMoveStep(int dir, int step)
 {
@@ -495,6 +521,7 @@ void SlaveThread::sltMoveStep(int dir, int step)
     runcmd.cmd = SMCMD_MOVESTEP;
     runcmd.dir = dir;
     runcmd.distance = step;
+    runcmd.freq = DEFAULTFREQ;
     mavlink_msg_runcmd_encode(1,1,&msg,&runcmd);
     unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
     if(!m_quit && pserial&& pserial->isOpen()){
@@ -506,13 +533,14 @@ void SlaveThread::sltMoveStep(int dir, int step)
     }
 }
 
-void SlaveThread::sendRunBWCMD()
+void SlaveThread::sendRunBWDCMD()
 {
     mavlink_message_t msg;
     uint8_t buffer[MAVLINK_MAX_PACKET_LEN];
     mavlink_runcmd_t runcmd;
     memset(&runcmd,0,sizeof(runcmd));
     runcmd.cmd = SMCMD_MOVEBWD;
+    runcmd.freq = DEFAULTFREQ;
     mavlink_msg_runcmd_encode(1,1,&msg,&runcmd);
     unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
     if(!m_quit && pserial&& pserial->isOpen()){
@@ -531,6 +559,7 @@ void SlaveThread::sendRunFWDCMD()
     mavlink_runcmd_t runcmd;
     memset(&runcmd,0,sizeof(runcmd));
     runcmd.cmd = SMCMD_MOVEFWD;
+    runcmd.freq = DEFAULTFREQ;
     mavlink_msg_runcmd_encode(1,1,&msg,&runcmd);
     unsigned len = mavlink_msg_to_send_buffer((uint8_t*)&buffer,&msg);
     if(!m_quit && pserial&& pserial->isOpen()){
@@ -760,9 +789,8 @@ void SlaveThread::run()
 
                         mavlink_heartbeat_t hbt;
                         mavlink_msg_heartbeat_decode(&message,&hbt);
-                        //if((sendtime++ % 10) == 0){
-                            emit this->hbPack(hbt);
-                        //}
+                        emit this->hbPack(hbt);
+
                         //QDateTime nowtime = QDateTime::currentDateTime();
                         (*pHbStream) << hbt.tick << ","  << hbt.position << "," << hbt.speed <<"," << hbt.dynamic << endl;
                         //QString request = QString("speed %1 pos %2").arg(hbt.speed).arg(hbt.position);

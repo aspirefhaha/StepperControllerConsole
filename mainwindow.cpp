@@ -124,7 +124,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->pbGetConfig, &QPushButton::clicked,&m_serialThread, &SlaveThread::sendGetConfigCMD);
     connect(ui->pbMoveFWD, &QPushButton::clicked , &m_serialThread, &SlaveThread::sendRunFWDCMD);
     connect(ui->pbSoftStop, &QPushButton::clicked, &m_serialThread, &SlaveThread::sendSoftStop);
-    connect(ui->pbMoveBWD, &QPushButton::clicked, &m_serialThread, &SlaveThread::sendRunBWCMD);
+    connect(ui->pbMoveBWD, &QPushButton::clicked, &m_serialThread, &SlaveThread::sendRunBWDCMD);
     connect(ui->pbHardStop, &QPushButton::clicked, &m_serialThread, &SlaveThread::sendHardStop);
     connect(ui->pbGetStatus, &QPushButton::clicked, &m_serialThread, &SlaveThread::sendGetStatus);
     connect(ui->pbSetZero, &QPushButton::clicked, &m_serialThread, &SlaveThread::sendSetHome);
@@ -148,19 +148,19 @@ MainWindow::MainWindow(QWidget *parent) :
 
 void MainWindow::sltSetCust()
 {
-    uint32_t wait1,wait2,wait3,wait4,wait5;
-    uint32_t freq1,freq2,freq3,freq4,freq5;
-    wait1 = ui->leCustWait1->text().toUInt();
-    wait2 = ui->leCustWait2->text().toUInt();
-    wait3 = ui->leCustWait3->text().toUInt();
-    wait4 = ui->leCustWait4->text().toUInt();
-    wait5 = ui->leCustWait5->text().toUInt();
-    freq1 = ui->leCustFreq1->text().toUInt();
-    freq2 = ui->leCustFreq2->text().toUInt();
-    freq3 = ui->leCustFreq3->text().toUInt();
-    freq4 = ui->leCustFreq4->text().toUInt();
-    freq5 = ui->leCustFreq5->text().toUInt();
-    emit m_serialThread.sendCust(wait1,wait2,wait3,wait4,wait5,freq1,freq2,freq3,freq4,freq5);
+//    uint32_t wait1,wait2,wait3,wait4,wait5;
+//    uint32_t freq1,freq2,freq3,freq4,freq5;
+//    wait1 = ui->leCustWait1->text().toUInt();
+//    wait2 = ui->leCustWait2->text().toUInt();
+//    wait3 = ui->leCustWait3->text().toUInt();
+//    wait4 = ui->leCustWait4->text().toUInt();
+//    wait5 = ui->leCustWait5->text().toUInt();
+//    freq1 = ui->leCustFreq1->text().toUInt();
+//    freq2 = ui->leCustFreq2->text().toUInt();
+//    freq3 = ui->leCustFreq3->text().toUInt();
+//    freq4 = ui->leCustFreq4->text().toUInt();
+//    freq5 = ui->leCustFreq5->text().toUInt();
+//    emit m_serialThread.sendCust(wait1,wait2,wait3,wait4,wait5,freq1,freq2,freq3,freq4,freq5);
 }
 
 void MainWindow::sltTGChanged(bool selected)
@@ -581,6 +581,8 @@ void MainWindow::parseHeartBeat(const mavlink_heartbeat_t & hbpack)
         ui->valueOpening->setValue( ((double)hbpack.position - downPos) * 100.0 / (upPos - downPos) );
         emit ui->valueOpening->valueChanged();
     }
+    //QString logitem = QString("Last Cmd") + QString::number(hbpack.lastcmd);
+    //ui->lwLog->insertItem(0,logitem);
 }
 
 void MainWindow::sltTValChanged(int newval)
@@ -686,6 +688,9 @@ void MainWindow::openComSuccess(const QString &s)
     ui->cbBaudRate->setEnabled(false);
     ui->cbSerialPort->setEnabled(false);
     ui->pbConnect->setEnabled(false);
+    QTimer::singleShot(500,&m_serialThread, SLOT(sltGetCust()));
+    QTimer::singleShot(700,&m_serialThread, SLOT(sendGetConfigCMD()));
+    QTimer::singleShot(1000,&m_serialThread, SLOT(sendGetStatus()));
 }
 
 void MainWindow::processError(const QString &s)

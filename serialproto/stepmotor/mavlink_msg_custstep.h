@@ -10,20 +10,25 @@ typedef struct __mavlink_custstep_t {
  uint32_t step3; /*<  */
  uint32_t step4; /*<  */
  uint32_t step5; /*<  */
+ uint32_t step6; /*<  */
+ uint32_t step7; /*<  */
  uint32_t wait1; /*<  */
  uint32_t wait2; /*<  */
  uint32_t wait3; /*<  */
  uint32_t wait4; /*<  */
  uint32_t wait5; /*<  */
+ uint32_t wait6; /*<  */
+ uint32_t wait7; /*<  */
+ uint32_t index; /*<  */
 } mavlink_custstep_t;
 
-#define MAVLINK_MSG_ID_CUSTSTEP_LEN 40
-#define MAVLINK_MSG_ID_CUSTSTEP_MIN_LEN 40
-#define MAVLINK_MSG_ID_4_LEN 40
-#define MAVLINK_MSG_ID_4_MIN_LEN 40
+#define MAVLINK_MSG_ID_CUSTSTEP_LEN 60
+#define MAVLINK_MSG_ID_CUSTSTEP_MIN_LEN 60
+#define MAVLINK_MSG_ID_4_LEN 60
+#define MAVLINK_MSG_ID_4_MIN_LEN 60
 
-#define MAVLINK_MSG_ID_CUSTSTEP_CRC 160
-#define MAVLINK_MSG_ID_4_CRC 160
+#define MAVLINK_MSG_ID_CUSTSTEP_CRC 13
+#define MAVLINK_MSG_ID_4_CRC 13
 
 
 
@@ -31,33 +36,43 @@ typedef struct __mavlink_custstep_t {
 #define MAVLINK_MESSAGE_INFO_CUSTSTEP { \
     4, \
     "CUSTSTEP", \
-    10, \
+    15, \
     {  { "step1", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_custstep_t, step1) }, \
          { "step2", NULL, MAVLINK_TYPE_UINT32_T, 0, 4, offsetof(mavlink_custstep_t, step2) }, \
          { "step3", NULL, MAVLINK_TYPE_UINT32_T, 0, 8, offsetof(mavlink_custstep_t, step3) }, \
          { "step4", NULL, MAVLINK_TYPE_UINT32_T, 0, 12, offsetof(mavlink_custstep_t, step4) }, \
          { "step5", NULL, MAVLINK_TYPE_UINT32_T, 0, 16, offsetof(mavlink_custstep_t, step5) }, \
-         { "wait1", NULL, MAVLINK_TYPE_UINT32_T, 0, 20, offsetof(mavlink_custstep_t, wait1) }, \
-         { "wait2", NULL, MAVLINK_TYPE_UINT32_T, 0, 24, offsetof(mavlink_custstep_t, wait2) }, \
-         { "wait3", NULL, MAVLINK_TYPE_UINT32_T, 0, 28, offsetof(mavlink_custstep_t, wait3) }, \
-         { "wait4", NULL, MAVLINK_TYPE_UINT32_T, 0, 32, offsetof(mavlink_custstep_t, wait4) }, \
-         { "wait5", NULL, MAVLINK_TYPE_UINT32_T, 0, 36, offsetof(mavlink_custstep_t, wait5) }, \
+         { "step6", NULL, MAVLINK_TYPE_UINT32_T, 0, 20, offsetof(mavlink_custstep_t, step6) }, \
+         { "step7", NULL, MAVLINK_TYPE_UINT32_T, 0, 24, offsetof(mavlink_custstep_t, step7) }, \
+         { "wait1", NULL, MAVLINK_TYPE_UINT32_T, 0, 28, offsetof(mavlink_custstep_t, wait1) }, \
+         { "wait2", NULL, MAVLINK_TYPE_UINT32_T, 0, 32, offsetof(mavlink_custstep_t, wait2) }, \
+         { "wait3", NULL, MAVLINK_TYPE_UINT32_T, 0, 36, offsetof(mavlink_custstep_t, wait3) }, \
+         { "wait4", NULL, MAVLINK_TYPE_UINT32_T, 0, 40, offsetof(mavlink_custstep_t, wait4) }, \
+         { "wait5", NULL, MAVLINK_TYPE_UINT32_T, 0, 44, offsetof(mavlink_custstep_t, wait5) }, \
+         { "wait6", NULL, MAVLINK_TYPE_UINT32_T, 0, 48, offsetof(mavlink_custstep_t, wait6) }, \
+         { "wait7", NULL, MAVLINK_TYPE_UINT32_T, 0, 52, offsetof(mavlink_custstep_t, wait7) }, \
+         { "index", NULL, MAVLINK_TYPE_UINT32_T, 0, 56, offsetof(mavlink_custstep_t, index) }, \
          } \
 }
 #else
 #define MAVLINK_MESSAGE_INFO_CUSTSTEP { \
     "CUSTSTEP", \
-    10, \
+    15, \
     {  { "step1", NULL, MAVLINK_TYPE_UINT32_T, 0, 0, offsetof(mavlink_custstep_t, step1) }, \
          { "step2", NULL, MAVLINK_TYPE_UINT32_T, 0, 4, offsetof(mavlink_custstep_t, step2) }, \
          { "step3", NULL, MAVLINK_TYPE_UINT32_T, 0, 8, offsetof(mavlink_custstep_t, step3) }, \
          { "step4", NULL, MAVLINK_TYPE_UINT32_T, 0, 12, offsetof(mavlink_custstep_t, step4) }, \
          { "step5", NULL, MAVLINK_TYPE_UINT32_T, 0, 16, offsetof(mavlink_custstep_t, step5) }, \
-         { "wait1", NULL, MAVLINK_TYPE_UINT32_T, 0, 20, offsetof(mavlink_custstep_t, wait1) }, \
-         { "wait2", NULL, MAVLINK_TYPE_UINT32_T, 0, 24, offsetof(mavlink_custstep_t, wait2) }, \
-         { "wait3", NULL, MAVLINK_TYPE_UINT32_T, 0, 28, offsetof(mavlink_custstep_t, wait3) }, \
-         { "wait4", NULL, MAVLINK_TYPE_UINT32_T, 0, 32, offsetof(mavlink_custstep_t, wait4) }, \
-         { "wait5", NULL, MAVLINK_TYPE_UINT32_T, 0, 36, offsetof(mavlink_custstep_t, wait5) }, \
+         { "step6", NULL, MAVLINK_TYPE_UINT32_T, 0, 20, offsetof(mavlink_custstep_t, step6) }, \
+         { "step7", NULL, MAVLINK_TYPE_UINT32_T, 0, 24, offsetof(mavlink_custstep_t, step7) }, \
+         { "wait1", NULL, MAVLINK_TYPE_UINT32_T, 0, 28, offsetof(mavlink_custstep_t, wait1) }, \
+         { "wait2", NULL, MAVLINK_TYPE_UINT32_T, 0, 32, offsetof(mavlink_custstep_t, wait2) }, \
+         { "wait3", NULL, MAVLINK_TYPE_UINT32_T, 0, 36, offsetof(mavlink_custstep_t, wait3) }, \
+         { "wait4", NULL, MAVLINK_TYPE_UINT32_T, 0, 40, offsetof(mavlink_custstep_t, wait4) }, \
+         { "wait5", NULL, MAVLINK_TYPE_UINT32_T, 0, 44, offsetof(mavlink_custstep_t, wait5) }, \
+         { "wait6", NULL, MAVLINK_TYPE_UINT32_T, 0, 48, offsetof(mavlink_custstep_t, wait6) }, \
+         { "wait7", NULL, MAVLINK_TYPE_UINT32_T, 0, 52, offsetof(mavlink_custstep_t, wait7) }, \
+         { "index", NULL, MAVLINK_TYPE_UINT32_T, 0, 56, offsetof(mavlink_custstep_t, index) }, \
          } \
 }
 #endif
@@ -73,15 +88,20 @@ typedef struct __mavlink_custstep_t {
  * @param step3  
  * @param step4  
  * @param step5  
+ * @param step6  
+ * @param step7  
  * @param wait1  
  * @param wait2  
  * @param wait3  
  * @param wait4  
  * @param wait5  
+ * @param wait6  
+ * @param wait7  
+ * @param index  
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_custstep_pack(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg,
-                               uint32_t step1, uint32_t step2, uint32_t step3, uint32_t step4, uint32_t step5, uint32_t wait1, uint32_t wait2, uint32_t wait3, uint32_t wait4, uint32_t wait5)
+                               uint32_t step1, uint32_t step2, uint32_t step3, uint32_t step4, uint32_t step5, uint32_t step6, uint32_t step7, uint32_t wait1, uint32_t wait2, uint32_t wait3, uint32_t wait4, uint32_t wait5, uint32_t wait6, uint32_t wait7, uint32_t index)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_CUSTSTEP_LEN];
@@ -90,11 +110,16 @@ static inline uint16_t mavlink_msg_custstep_pack(uint8_t system_id, uint8_t comp
     _mav_put_uint32_t(buf, 8, step3);
     _mav_put_uint32_t(buf, 12, step4);
     _mav_put_uint32_t(buf, 16, step5);
-    _mav_put_uint32_t(buf, 20, wait1);
-    _mav_put_uint32_t(buf, 24, wait2);
-    _mav_put_uint32_t(buf, 28, wait3);
-    _mav_put_uint32_t(buf, 32, wait4);
-    _mav_put_uint32_t(buf, 36, wait5);
+    _mav_put_uint32_t(buf, 20, step6);
+    _mav_put_uint32_t(buf, 24, step7);
+    _mav_put_uint32_t(buf, 28, wait1);
+    _mav_put_uint32_t(buf, 32, wait2);
+    _mav_put_uint32_t(buf, 36, wait3);
+    _mav_put_uint32_t(buf, 40, wait4);
+    _mav_put_uint32_t(buf, 44, wait5);
+    _mav_put_uint32_t(buf, 48, wait6);
+    _mav_put_uint32_t(buf, 52, wait7);
+    _mav_put_uint32_t(buf, 56, index);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_CUSTSTEP_LEN);
 #else
@@ -104,11 +129,16 @@ static inline uint16_t mavlink_msg_custstep_pack(uint8_t system_id, uint8_t comp
     packet.step3 = step3;
     packet.step4 = step4;
     packet.step5 = step5;
+    packet.step6 = step6;
+    packet.step7 = step7;
     packet.wait1 = wait1;
     packet.wait2 = wait2;
     packet.wait3 = wait3;
     packet.wait4 = wait4;
     packet.wait5 = wait5;
+    packet.wait6 = wait6;
+    packet.wait7 = wait7;
+    packet.index = index;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_CUSTSTEP_LEN);
 #endif
@@ -128,16 +158,21 @@ static inline uint16_t mavlink_msg_custstep_pack(uint8_t system_id, uint8_t comp
  * @param step3  
  * @param step4  
  * @param step5  
+ * @param step6  
+ * @param step7  
  * @param wait1  
  * @param wait2  
  * @param wait3  
  * @param wait4  
  * @param wait5  
+ * @param wait6  
+ * @param wait7  
+ * @param index  
  * @return length of the message in bytes (excluding serial stream start sign)
  */
 static inline uint16_t mavlink_msg_custstep_pack_chan(uint8_t system_id, uint8_t component_id, uint8_t chan,
                                mavlink_message_t* msg,
-                                   uint32_t step1,uint32_t step2,uint32_t step3,uint32_t step4,uint32_t step5,uint32_t wait1,uint32_t wait2,uint32_t wait3,uint32_t wait4,uint32_t wait5)
+                                   uint32_t step1,uint32_t step2,uint32_t step3,uint32_t step4,uint32_t step5,uint32_t step6,uint32_t step7,uint32_t wait1,uint32_t wait2,uint32_t wait3,uint32_t wait4,uint32_t wait5,uint32_t wait6,uint32_t wait7,uint32_t index)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_CUSTSTEP_LEN];
@@ -146,11 +181,16 @@ static inline uint16_t mavlink_msg_custstep_pack_chan(uint8_t system_id, uint8_t
     _mav_put_uint32_t(buf, 8, step3);
     _mav_put_uint32_t(buf, 12, step4);
     _mav_put_uint32_t(buf, 16, step5);
-    _mav_put_uint32_t(buf, 20, wait1);
-    _mav_put_uint32_t(buf, 24, wait2);
-    _mav_put_uint32_t(buf, 28, wait3);
-    _mav_put_uint32_t(buf, 32, wait4);
-    _mav_put_uint32_t(buf, 36, wait5);
+    _mav_put_uint32_t(buf, 20, step6);
+    _mav_put_uint32_t(buf, 24, step7);
+    _mav_put_uint32_t(buf, 28, wait1);
+    _mav_put_uint32_t(buf, 32, wait2);
+    _mav_put_uint32_t(buf, 36, wait3);
+    _mav_put_uint32_t(buf, 40, wait4);
+    _mav_put_uint32_t(buf, 44, wait5);
+    _mav_put_uint32_t(buf, 48, wait6);
+    _mav_put_uint32_t(buf, 52, wait7);
+    _mav_put_uint32_t(buf, 56, index);
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), buf, MAVLINK_MSG_ID_CUSTSTEP_LEN);
 #else
@@ -160,11 +200,16 @@ static inline uint16_t mavlink_msg_custstep_pack_chan(uint8_t system_id, uint8_t
     packet.step3 = step3;
     packet.step4 = step4;
     packet.step5 = step5;
+    packet.step6 = step6;
+    packet.step7 = step7;
     packet.wait1 = wait1;
     packet.wait2 = wait2;
     packet.wait3 = wait3;
     packet.wait4 = wait4;
     packet.wait5 = wait5;
+    packet.wait6 = wait6;
+    packet.wait7 = wait7;
+    packet.index = index;
 
         memcpy(_MAV_PAYLOAD_NON_CONST(msg), &packet, MAVLINK_MSG_ID_CUSTSTEP_LEN);
 #endif
@@ -183,7 +228,7 @@ static inline uint16_t mavlink_msg_custstep_pack_chan(uint8_t system_id, uint8_t
  */
 static inline uint16_t mavlink_msg_custstep_encode(uint8_t system_id, uint8_t component_id, mavlink_message_t* msg, const mavlink_custstep_t* custstep)
 {
-    return mavlink_msg_custstep_pack(system_id, component_id, msg, custstep->step1, custstep->step2, custstep->step3, custstep->step4, custstep->step5, custstep->wait1, custstep->wait2, custstep->wait3, custstep->wait4, custstep->wait5);
+    return mavlink_msg_custstep_pack(system_id, component_id, msg, custstep->step1, custstep->step2, custstep->step3, custstep->step4, custstep->step5, custstep->step6, custstep->step7, custstep->wait1, custstep->wait2, custstep->wait3, custstep->wait4, custstep->wait5, custstep->wait6, custstep->wait7, custstep->index);
 }
 
 /**
@@ -197,7 +242,7 @@ static inline uint16_t mavlink_msg_custstep_encode(uint8_t system_id, uint8_t co
  */
 static inline uint16_t mavlink_msg_custstep_encode_chan(uint8_t system_id, uint8_t component_id, uint8_t chan, mavlink_message_t* msg, const mavlink_custstep_t* custstep)
 {
-    return mavlink_msg_custstep_pack_chan(system_id, component_id, chan, msg, custstep->step1, custstep->step2, custstep->step3, custstep->step4, custstep->step5, custstep->wait1, custstep->wait2, custstep->wait3, custstep->wait4, custstep->wait5);
+    return mavlink_msg_custstep_pack_chan(system_id, component_id, chan, msg, custstep->step1, custstep->step2, custstep->step3, custstep->step4, custstep->step5, custstep->step6, custstep->step7, custstep->wait1, custstep->wait2, custstep->wait3, custstep->wait4, custstep->wait5, custstep->wait6, custstep->wait7, custstep->index);
 }
 
 /**
@@ -209,15 +254,20 @@ static inline uint16_t mavlink_msg_custstep_encode_chan(uint8_t system_id, uint8
  * @param step3  
  * @param step4  
  * @param step5  
+ * @param step6  
+ * @param step7  
  * @param wait1  
  * @param wait2  
  * @param wait3  
  * @param wait4  
  * @param wait5  
+ * @param wait6  
+ * @param wait7  
+ * @param index  
  */
 #ifdef MAVLINK_USE_CONVENIENCE_FUNCTIONS
 
-static inline void mavlink_msg_custstep_send(mavlink_channel_t chan, uint32_t step1, uint32_t step2, uint32_t step3, uint32_t step4, uint32_t step5, uint32_t wait1, uint32_t wait2, uint32_t wait3, uint32_t wait4, uint32_t wait5)
+static inline void mavlink_msg_custstep_send(mavlink_channel_t chan, uint32_t step1, uint32_t step2, uint32_t step3, uint32_t step4, uint32_t step5, uint32_t step6, uint32_t step7, uint32_t wait1, uint32_t wait2, uint32_t wait3, uint32_t wait4, uint32_t wait5, uint32_t wait6, uint32_t wait7, uint32_t index)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char buf[MAVLINK_MSG_ID_CUSTSTEP_LEN];
@@ -226,11 +276,16 @@ static inline void mavlink_msg_custstep_send(mavlink_channel_t chan, uint32_t st
     _mav_put_uint32_t(buf, 8, step3);
     _mav_put_uint32_t(buf, 12, step4);
     _mav_put_uint32_t(buf, 16, step5);
-    _mav_put_uint32_t(buf, 20, wait1);
-    _mav_put_uint32_t(buf, 24, wait2);
-    _mav_put_uint32_t(buf, 28, wait3);
-    _mav_put_uint32_t(buf, 32, wait4);
-    _mav_put_uint32_t(buf, 36, wait5);
+    _mav_put_uint32_t(buf, 20, step6);
+    _mav_put_uint32_t(buf, 24, step7);
+    _mav_put_uint32_t(buf, 28, wait1);
+    _mav_put_uint32_t(buf, 32, wait2);
+    _mav_put_uint32_t(buf, 36, wait3);
+    _mav_put_uint32_t(buf, 40, wait4);
+    _mav_put_uint32_t(buf, 44, wait5);
+    _mav_put_uint32_t(buf, 48, wait6);
+    _mav_put_uint32_t(buf, 52, wait7);
+    _mav_put_uint32_t(buf, 56, index);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_CUSTSTEP, buf, MAVLINK_MSG_ID_CUSTSTEP_MIN_LEN, MAVLINK_MSG_ID_CUSTSTEP_LEN, MAVLINK_MSG_ID_CUSTSTEP_CRC);
 #else
@@ -240,11 +295,16 @@ static inline void mavlink_msg_custstep_send(mavlink_channel_t chan, uint32_t st
     packet.step3 = step3;
     packet.step4 = step4;
     packet.step5 = step5;
+    packet.step6 = step6;
+    packet.step7 = step7;
     packet.wait1 = wait1;
     packet.wait2 = wait2;
     packet.wait3 = wait3;
     packet.wait4 = wait4;
     packet.wait5 = wait5;
+    packet.wait6 = wait6;
+    packet.wait7 = wait7;
+    packet.index = index;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_CUSTSTEP, (const char *)&packet, MAVLINK_MSG_ID_CUSTSTEP_MIN_LEN, MAVLINK_MSG_ID_CUSTSTEP_LEN, MAVLINK_MSG_ID_CUSTSTEP_CRC);
 #endif
@@ -258,7 +318,7 @@ static inline void mavlink_msg_custstep_send(mavlink_channel_t chan, uint32_t st
 static inline void mavlink_msg_custstep_send_struct(mavlink_channel_t chan, const mavlink_custstep_t* custstep)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
-    mavlink_msg_custstep_send(chan, custstep->step1, custstep->step2, custstep->step3, custstep->step4, custstep->step5, custstep->wait1, custstep->wait2, custstep->wait3, custstep->wait4, custstep->wait5);
+    mavlink_msg_custstep_send(chan, custstep->step1, custstep->step2, custstep->step3, custstep->step4, custstep->step5, custstep->step6, custstep->step7, custstep->wait1, custstep->wait2, custstep->wait3, custstep->wait4, custstep->wait5, custstep->wait6, custstep->wait7, custstep->index);
 #else
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_CUSTSTEP, (const char *)custstep, MAVLINK_MSG_ID_CUSTSTEP_MIN_LEN, MAVLINK_MSG_ID_CUSTSTEP_LEN, MAVLINK_MSG_ID_CUSTSTEP_CRC);
 #endif
@@ -272,7 +332,7 @@ static inline void mavlink_msg_custstep_send_struct(mavlink_channel_t chan, cons
   is usually the receive buffer for the channel, and allows a reply to an
   incoming message with minimum stack space usage.
  */
-static inline void mavlink_msg_custstep_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint32_t step1, uint32_t step2, uint32_t step3, uint32_t step4, uint32_t step5, uint32_t wait1, uint32_t wait2, uint32_t wait3, uint32_t wait4, uint32_t wait5)
+static inline void mavlink_msg_custstep_send_buf(mavlink_message_t *msgbuf, mavlink_channel_t chan,  uint32_t step1, uint32_t step2, uint32_t step3, uint32_t step4, uint32_t step5, uint32_t step6, uint32_t step7, uint32_t wait1, uint32_t wait2, uint32_t wait3, uint32_t wait4, uint32_t wait5, uint32_t wait6, uint32_t wait7, uint32_t index)
 {
 #if MAVLINK_NEED_BYTE_SWAP || !MAVLINK_ALIGNED_FIELDS
     char *buf = (char *)msgbuf;
@@ -281,11 +341,16 @@ static inline void mavlink_msg_custstep_send_buf(mavlink_message_t *msgbuf, mavl
     _mav_put_uint32_t(buf, 8, step3);
     _mav_put_uint32_t(buf, 12, step4);
     _mav_put_uint32_t(buf, 16, step5);
-    _mav_put_uint32_t(buf, 20, wait1);
-    _mav_put_uint32_t(buf, 24, wait2);
-    _mav_put_uint32_t(buf, 28, wait3);
-    _mav_put_uint32_t(buf, 32, wait4);
-    _mav_put_uint32_t(buf, 36, wait5);
+    _mav_put_uint32_t(buf, 20, step6);
+    _mav_put_uint32_t(buf, 24, step7);
+    _mav_put_uint32_t(buf, 28, wait1);
+    _mav_put_uint32_t(buf, 32, wait2);
+    _mav_put_uint32_t(buf, 36, wait3);
+    _mav_put_uint32_t(buf, 40, wait4);
+    _mav_put_uint32_t(buf, 44, wait5);
+    _mav_put_uint32_t(buf, 48, wait6);
+    _mav_put_uint32_t(buf, 52, wait7);
+    _mav_put_uint32_t(buf, 56, index);
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_CUSTSTEP, buf, MAVLINK_MSG_ID_CUSTSTEP_MIN_LEN, MAVLINK_MSG_ID_CUSTSTEP_LEN, MAVLINK_MSG_ID_CUSTSTEP_CRC);
 #else
@@ -295,11 +360,16 @@ static inline void mavlink_msg_custstep_send_buf(mavlink_message_t *msgbuf, mavl
     packet->step3 = step3;
     packet->step4 = step4;
     packet->step5 = step5;
+    packet->step6 = step6;
+    packet->step7 = step7;
     packet->wait1 = wait1;
     packet->wait2 = wait2;
     packet->wait3 = wait3;
     packet->wait4 = wait4;
     packet->wait5 = wait5;
+    packet->wait6 = wait6;
+    packet->wait7 = wait7;
+    packet->index = index;
 
     _mav_finalize_message_chan_send(chan, MAVLINK_MSG_ID_CUSTSTEP, (const char *)packet, MAVLINK_MSG_ID_CUSTSTEP_MIN_LEN, MAVLINK_MSG_ID_CUSTSTEP_LEN, MAVLINK_MSG_ID_CUSTSTEP_CRC);
 #endif
@@ -362,13 +432,33 @@ static inline uint32_t mavlink_msg_custstep_get_step5(const mavlink_message_t* m
 }
 
 /**
+ * @brief Get field step6 from custstep message
+ *
+ * @return  
+ */
+static inline uint32_t mavlink_msg_custstep_get_step6(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_uint32_t(msg,  20);
+}
+
+/**
+ * @brief Get field step7 from custstep message
+ *
+ * @return  
+ */
+static inline uint32_t mavlink_msg_custstep_get_step7(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_uint32_t(msg,  24);
+}
+
+/**
  * @brief Get field wait1 from custstep message
  *
  * @return  
  */
 static inline uint32_t mavlink_msg_custstep_get_wait1(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint32_t(msg,  20);
+    return _MAV_RETURN_uint32_t(msg,  28);
 }
 
 /**
@@ -378,7 +468,7 @@ static inline uint32_t mavlink_msg_custstep_get_wait1(const mavlink_message_t* m
  */
 static inline uint32_t mavlink_msg_custstep_get_wait2(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint32_t(msg,  24);
+    return _MAV_RETURN_uint32_t(msg,  32);
 }
 
 /**
@@ -388,7 +478,7 @@ static inline uint32_t mavlink_msg_custstep_get_wait2(const mavlink_message_t* m
  */
 static inline uint32_t mavlink_msg_custstep_get_wait3(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint32_t(msg,  28);
+    return _MAV_RETURN_uint32_t(msg,  36);
 }
 
 /**
@@ -398,7 +488,7 @@ static inline uint32_t mavlink_msg_custstep_get_wait3(const mavlink_message_t* m
  */
 static inline uint32_t mavlink_msg_custstep_get_wait4(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint32_t(msg,  32);
+    return _MAV_RETURN_uint32_t(msg,  40);
 }
 
 /**
@@ -408,7 +498,37 @@ static inline uint32_t mavlink_msg_custstep_get_wait4(const mavlink_message_t* m
  */
 static inline uint32_t mavlink_msg_custstep_get_wait5(const mavlink_message_t* msg)
 {
-    return _MAV_RETURN_uint32_t(msg,  36);
+    return _MAV_RETURN_uint32_t(msg,  44);
+}
+
+/**
+ * @brief Get field wait6 from custstep message
+ *
+ * @return  
+ */
+static inline uint32_t mavlink_msg_custstep_get_wait6(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_uint32_t(msg,  48);
+}
+
+/**
+ * @brief Get field wait7 from custstep message
+ *
+ * @return  
+ */
+static inline uint32_t mavlink_msg_custstep_get_wait7(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_uint32_t(msg,  52);
+}
+
+/**
+ * @brief Get field index from custstep message
+ *
+ * @return  
+ */
+static inline uint32_t mavlink_msg_custstep_get_index(const mavlink_message_t* msg)
+{
+    return _MAV_RETURN_uint32_t(msg,  56);
 }
 
 /**
@@ -425,11 +545,16 @@ static inline void mavlink_msg_custstep_decode(const mavlink_message_t* msg, mav
     custstep->step3 = mavlink_msg_custstep_get_step3(msg);
     custstep->step4 = mavlink_msg_custstep_get_step4(msg);
     custstep->step5 = mavlink_msg_custstep_get_step5(msg);
+    custstep->step6 = mavlink_msg_custstep_get_step6(msg);
+    custstep->step7 = mavlink_msg_custstep_get_step7(msg);
     custstep->wait1 = mavlink_msg_custstep_get_wait1(msg);
     custstep->wait2 = mavlink_msg_custstep_get_wait2(msg);
     custstep->wait3 = mavlink_msg_custstep_get_wait3(msg);
     custstep->wait4 = mavlink_msg_custstep_get_wait4(msg);
     custstep->wait5 = mavlink_msg_custstep_get_wait5(msg);
+    custstep->wait6 = mavlink_msg_custstep_get_wait6(msg);
+    custstep->wait7 = mavlink_msg_custstep_get_wait7(msg);
+    custstep->index = mavlink_msg_custstep_get_index(msg);
 #else
         uint8_t len = msg->len < MAVLINK_MSG_ID_CUSTSTEP_LEN? msg->len : MAVLINK_MSG_ID_CUSTSTEP_LEN;
         memset(custstep, 0, MAVLINK_MSG_ID_CUSTSTEP_LEN);

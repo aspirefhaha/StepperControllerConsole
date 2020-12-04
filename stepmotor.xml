@@ -4,8 +4,8 @@
   <enums>
     <enum name="SMCMD">
       <description>StepMotor Command ENUMS</description>
-      <entry value="0" name="SMCMD_GETCONFIG">
-        <description>Get Motor Stepper Controller configs</description>
+      <entry value="0" name="SMCMD_IDLE">
+        <description>IDLE命令</description>
       </entry>
       <entry value="1" name="SMCMD_SOFTSTOP">
         <description>Reserved for future use.</description>
@@ -37,6 +37,11 @@
       <entry value="26" name="SMCMD_STARTENGINE" />
       <entry value="27" name="SMCMD_GETCUSTSTEP" />
       <entry value="28" name="SMCMD_STOPENGINE" />
+	  <entry value="29" name="SMCMD_GETCONFIG">
+        <description>Get Motor Stepper Controller configs</description>
+      </entry>
+	  
+      <entry value="30" name="SMCMD_STEPFREQDIRMOVE" />
     </enum>
     
     
@@ -57,6 +62,7 @@
       <field type="int32_t" name="speed" ></field>
       <field type="uint8_t" name="lockstate">上下限位状态</field>
       <field type="uint8_t" name="runstatus" enum="EMOTORSTATE">外部PWM方式下的加减速状态</field>
+      <field type="uint32_t" name="lastcmd">上一次命令</field>
     </message>
     <message id="1" name="CONFIG">
       <field type="uint32_t" name="acc"/>
@@ -76,6 +82,7 @@
       <field type="uint32_t" name="cmd" enum="SMCMD"/>
       <field type="uint32_t" name="dir" > 0-fwd 1-bwd </field> 
       <field type="int32_t" name="distance"> distance </field>
+      <field type="int32_t" name="freq"> freq </field>
     </message>
     <message id="3" name="L6474STATUS" >
       <field type="uint16_t" name="status"></field>  
@@ -86,11 +93,16 @@
         <field type="uint32_t" name="step3" />
         <field type="uint32_t" name="step4" />
         <field type="uint32_t" name="step5" />
+        <field type="uint32_t" name="step6" />
+        <field type="uint32_t" name="step7" />
         <field type="uint32_t" name="wait1" />
         <field type="uint32_t" name="wait2" />
         <field type="uint32_t" name="wait3" />
         <field type="uint32_t" name="wait4" />
         <field type="uint32_t" name="wait5" />
+        <field type="uint32_t" name="wait6" />
+        <field type="uint32_t" name="wait7" />
+        <field type="uint32_t" name="index" />
     </message>
     
     <message id="300" name="PROTOCOL_VERSION">

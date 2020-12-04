@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1370</width>
-    <height>1099</height>
+    <width>1493</width>
+    <height>1160</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -165,7 +165,7 @@
                <item>
                 <widget class="QSpinBox" name="sbStep">
                  <property name="maximum">
-                  <number>999</number>
+                  <number>50000</number>
                  </property>
                 </widget>
                </item>
@@ -203,10 +203,10 @@
                <item>
                 <widget class="QSpinBox" name="sbTargetPos">
                  <property name="minimum">
-                  <number>-5000</number>
+                  <number>-500000</number>
                  </property>
                  <property name="maximum">
-                  <number>5000</number>
+                  <number>500000</number>
                  </property>
                 </widget>
                </item>
@@ -259,6 +259,12 @@
           <item>
            <widget class="QLineEdit" name="leCustWait5"/>
           </item>
+          <item>
+           <widget class="QLineEdit" name="leCustWait6"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="leCustWait7"/>
+          </item>
          </layout>
         </item>
         <item>
@@ -284,6 +290,12 @@
           </item>
           <item>
            <widget class="QLineEdit" name="leCustFreq5"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="leCustFreq6"/>
+          </item>
+          <item>
+           <widget class="QLineEdit" name="leCustFreq7"/>
           </item>
          </layout>
         </item>
@@ -383,10 +395,7 @@
               <blue>28</blue>
              </color>
             </property>
-            <property name="pieStyle">
-             <enum>GaugeCar::PieStyle_Current</enum>
-            </property>
-            <property name="title">
+            <property name="title" stdset="0">
              <string>阀门开度</string>
             </property>
            </widget>
@@ -549,15 +558,12 @@
           </property>
           <property name="pieColorEnd">
            <color>
-            <red>53</red>
-            <green>53</green>
-            <blue>79</blue>
+            <red>221</red>
+            <green>0</green>
+            <blue>0</blue>
            </color>
           </property>
-          <property name="pieStyle">
-           <enum>GaugeCar::PieStyle_Current</enum>
-          </property>
-          <property name="title">
+          <property name="title" stdset="0">
            <string>速度</string>
           </property>
          </widget>
@@ -776,7 +782,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1370</width>
+     <width>1493</width>
      <height>23</height>
     </rect>
    </property>
@@ -800,7 +806,7 @@
    <property name="minimumSize">
     <size>
      <width>434</width>
-     <height>917</height>
+     <height>958</height>
     </size>
    </property>
    <attribute name="dockWidgetArea">

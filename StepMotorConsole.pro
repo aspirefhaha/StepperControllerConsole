@@ -31,18 +31,24 @@ SOURCES += \
         mainwindow.cpp \
         ../GaugeCar/GaugeCar.cpp \
         ../AngleGauge/AngleGauge.cpp \
-        slavethread.cpp
+        slavethread.cpp \
+    StepperConsole.cpp \
+    FreqStepDlg.cpp
 
 HEADERS += \
         mainwindow.h \
         ../GaugeCar/GaugeCar.h \
         ../AngleGauge/AngleGauge.h \
-        slavethread.h
+        slavethread.h \
+    StepperConsole.h \
+    FreqStepDlg.h
 
 TRANSLATIONS += StepMotorConsole.ts
 
 FORMS += \
-        mainwindow.ui
+        mainwindow.ui \
+    StepperConsole.ui \
+    FreqStepDlg.ui
 
 RESOURCES += \
     stepmotorconsole.qrc
@@ -53,3 +59,4 @@ RC_FILE += myapp.rc
 
 DISTFILES += \
     stepmotor.xml
+
